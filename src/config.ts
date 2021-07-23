@@ -70,13 +70,7 @@ export async function validateInvocation(
     );
   }
 
-  //checks for orgUrl
-  if (/https?:\/\//.test(config.orgUrl)) {
-    throw new IntegrationValidationError(
-      'Config {orgUrl} should not have https:// prepended',
-    );
-  }
-
+  //check for orgUrl
   const splitter = config.orgUrl.split('.');
   if (!(splitter[1] === 'onelogin')) {
     throw new IntegrationValidationError(

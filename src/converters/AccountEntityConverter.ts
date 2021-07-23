@@ -14,6 +14,6 @@ export function createAccountEntity(account: Account): AccountEntity {
     _type: ACCOUNT_ENTITY_TYPE,
     displayName: account.name,
     name: account.name,
-    webLink: 'https://' + account.orgUrl,
+    webLink: account.orgUrl,
   };
 }

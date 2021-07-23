@@ -1,5 +1,3 @@
-//const jwtDecode = require('jwt-decode');
-
 import {
   IntegrationLogger,
   IntegrationProviderAuthenticationError,

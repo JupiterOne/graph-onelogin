@@ -19,5 +19,5 @@ export const integrationConfig: IntegrationConfig = {
   clientSecret: process.env.CLIENT_SECRET || 'clientSecret',
   //orgUrl is used for the weblink property of the account entity
   //to make the entity snapshot match in testing, don't use process.env.orgUrl
-  orgUrl: 'orgUrl.com',
+  orgUrl: 'https://orgUrl.com',
 };
