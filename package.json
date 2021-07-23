@@ -27,19 +27,16 @@
     "prepack": "yarn build"
   },
   "dependencies": {
-    "@jupiterone/integration-sdk-core": "^6.6.0",
-    "node-fetch": "^2.3.0"
+    "@jupiterone/integration-sdk-core": "^6.11.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^6.6.0",
-    "@jupiterone/integration-sdk-dev-tools": "^6.6.0",
-    "@jupiterone/integration-sdk-testing": "^6.6.0",
-    "@types/bunyan": "^1.8.5",
+    "@jupiterone/integration-sdk-core": "^6.11.0",
+    "@jupiterone/integration-sdk-dev-tools": "^6.11.0",
+    "@jupiterone/integration-sdk-testing": "^6.11.0",
     "@types/fs-extra": "^5.0.5",
-    "@types/gremlin": "^3.4.2",
-    "@types/node-fetch": "^2.1.6",
-    "bunyan": "^1.8.12",
-    "dotenv": "^9.0.2",
+    "@types/node-fetch": "^2.5.12",
+    "dotenv": "^10.0.0",
     "fs-extra": "^7.0.1"
   }
 }
