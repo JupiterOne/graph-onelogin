@@ -42,7 +42,7 @@ export class APIClient {
     } catch (err) {
       throw new IntegrationProviderAuthenticationError({
         cause: err,
-        endpoint: this.config.orgUrl,
+        endpoint: this.config.orgUrl || 'onelogin.com',
         status: err.status,
         statusText: err.statusText,
       });

@@ -23,7 +23,7 @@ export async function fetchAccountDetails({
 }: IntegrationStepExecutionContext<IntegrationConfig>) {
   const account = {
     id: instance.id,
-    name: instance.config.accountName || instance.name,
+    name: instance.name,
     orgUrl: instance.config.orgUrl,
   };
   const accountEntity = await jobState.addEntity(createAccountEntity(account));

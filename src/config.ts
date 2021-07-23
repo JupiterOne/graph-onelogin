@@ -28,9 +28,6 @@ export const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
     type: 'string',
     mask: true,
   },
-  orgUrl: {
-    type: 'string',
-  },
 };
 
 /**
@@ -51,12 +48,7 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   /**
    * The Onelogin organization URL. Only used to create a weblink to the account.
    */
-  orgUrl: string;
-
-  /**
-   * The Onelogin account name. Optional. Used to create name of account entity in J1 graph.
-   */
-  accountName?: string;
+  orgUrl?: string;
 }
 
 export async function validateInvocation(
@@ -71,6 +63,9 @@ export async function validateInvocation(
   }
 
   //check for orgUrl
+  if (!config.orgUrl) {
+    config.orgUrl = 'https://example.onelogin.com';
+  }
   const splitter = config.orgUrl.split('.');
   if (!(splitter[1] === 'onelogin')) {
     throw new IntegrationValidationError(
