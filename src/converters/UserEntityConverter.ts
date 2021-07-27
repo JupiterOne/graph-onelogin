@@ -1,40 +1,39 @@
-import { convertProperties } from "@jupiterone/jupiter-managed-integration-sdk";
-import { USER_ENTITY_CLASS, USER_ENTITY_TYPE, UserEntity } from "../jupiterone";
-import { User } from "../onelogin/OneLoginClient";
+import {
+  convertProperties,
+  parseTimePropertyValue,
+} from '@jupiterone/integration-sdk-core';
+import { USER_ENTITY_CLASS, USER_ENTITY_TYPE, UserEntity } from '../jupiterone';
+import { User } from '../onelogin/OneLoginClient';
 
-import generateKey from "../utils/generateKey";
-import getTime from "../utils/getTime";
-
-export function createUserEntities(data: User[]): UserEntity[] {
-  return data.map(user => createUserEntity(user));
-}
+import generateKey from '../utils/generateKey';
 
 export function createUserEntity(user: User): UserEntity {
   return {
     _key: generateKey(USER_ENTITY_TYPE, user.id),
     _type: USER_ENTITY_TYPE,
     _class: USER_ENTITY_CLASS,
-    id: user.id,
+    id: String(user.id),
     displayName: `${user.firstname} ${user.lastname}`,
-    activatedAt: getTime(user.activated_at),
-    createdAt: getTime(user.created_at)!,
+    name: `${user.firstname} ${user.lastname}`,
+    activatedAt: parseTimePropertyValue(user.activated_at),
+    createdAt: parseTimePropertyValue(user.created_at)!,
     email: user.email,
-    username: user.username || "",
+    username: user.username || '',
     firstname: user.firstname,
     groupId: user.group_id || 0,
     invalidLoginAttempts: user.invalid_login_attempts,
-    invitationSentAt: getTime(user.invitation_sent_at),
-    lastLogin: getTime(user.last_login),
+    invitationSentAt: parseTimePropertyValue(user.invitation_sent_at),
+    lastLogin: parseTimePropertyValue(user.last_login),
     lastname: user.lastname,
     lockedUntil: user.locked_until,
-    comment: user.comment || "",
-    openidName: user.openid_name || "",
+    comment: user.comment || '',
+    openidName: user.openid_name || '',
     localeCode: user.locale_code,
     preferredLocaleCode: user.preferred_locale_code,
-    passwordChangedAt: getTime(user.password_changed_at),
+    passwordChangedAt: parseTimePropertyValue(user.password_changed_at),
     phone: user.phone,
-    status: user.status,
-    updatedAt: getTime(user.updated_at)!,
+    status: String(user.status),
+    updatedAt: parseTimePropertyValue(user.updated_at)!,
     distinguishedName: user.distinguished_name,
     externalId: user.external_id,
     directoryId: user.directory_id,
@@ -49,7 +48,7 @@ export function createUserEntity(user: User): UserEntity {
     state: user.state,
     trustedIdpId: user.trusted_idp_id,
     ...convertProperties(user.custom_attributes, {
-      prefix: "custom_attributes",
+      prefix: 'customAttributes', //used to be custom_attributes
     }),
   };
 }

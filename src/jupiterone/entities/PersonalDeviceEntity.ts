@@ -1,10 +1,10 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { Entity } from '@jupiterone/integration-sdk-core';
 
-export const PERSONAL_DEVICE_ENTITY_TYPE = "mfa_device";
-export const PERSONAL_DEVICE_ENTITY_CLASS = ["Key", "AccessKey"];
+export const PERSONAL_DEVICE_ENTITY_TYPE = 'mfa_device';
+export const PERSONAL_DEVICE_ENTITY_CLASS = ['Key', 'AccessKey'];
 
-export interface PersonalDeviceEntity extends EntityFromIntegration {
-  id: number;
+export interface PersonalDeviceEntity extends Entity {
+  id: string;
   needsTrigger: boolean;
   default: boolean;
   active: boolean;

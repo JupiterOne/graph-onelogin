@@ -2,10 +2,10 @@ import {
   createMockIntegrationLogger,
   Recording,
   setupRecording,
-} from "@jupiterone/integration-sdk-testing";
+} from '@jupiterone/integration-sdk-testing';
 
-import { testConfig } from "../../test/config";
-import OneLoginClient from "./OneLoginClient";
+import { integrationConfig } from '../../test/config';
+import OneLoginClient from './OneLoginClient';
 
 let recording: Recording;
 
@@ -15,11 +15,11 @@ afterEach(async () => {
   }
 });
 
-describe("fetchUsers", () => {
-  test("success", async () => {
+describe('fetchUsers', () => {
+  test('success', async () => {
     recording = setupRecording({
       directory: __dirname,
-      name: "fetchUsers",
+      name: 'fetchUsers',
       options: {
         matchRequestsBy: {
           body: false,
@@ -28,8 +28,8 @@ describe("fetchUsers", () => {
     });
 
     const client = new OneLoginClient(
-      testConfig.clientId,
-      testConfig.clientSecret,
+      integrationConfig.clientId,
+      integrationConfig.clientSecret,
       createMockIntegrationLogger(),
     );
     await client.authenticate();

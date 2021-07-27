@@ -1,7 +1,7 @@
-import * as dotenv from "dotenv";
-import * as path from "path";
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
-import { IntegrationConfig } from "../src/types";
+import { IntegrationConfig } from '../src/config';
 
 /**
  * Recording tests require valid credentials loaded from `.env`. Record new tests as follows:
@@ -10,12 +10,14 @@ import { IntegrationConfig } from "../src/types";
  */
 if (process.env.LOAD_ENV) {
   dotenv.config({
-    path: path.join(__dirname, "../.env"),
+    path: path.join(__dirname, '../.env'),
   });
 }
 
-export const testConfig: IntegrationConfig = {
-  clientId: process.env.CLIENT_ID || "clientId",
-  clientSecret: process.env.CLIENT_SECRET || "clientSecret",
-  orgUrl: process.env.ORG_URL || "orgUrl",
+export const integrationConfig: IntegrationConfig = {
+  clientId: process.env.CLIENT_ID || 'clientId',
+  clientSecret: process.env.CLIENT_SECRET || 'clientSecret',
+  //orgUrl is used for the weblink property of the account entity
+  //to make the entity snapshot match in testing, don't use process.env.orgUrl
+  orgUrl: 'https://orgUrl.com',
 };

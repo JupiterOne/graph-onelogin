@@ -2,10 +2,10 @@ import {
   ACCOUNT_ENTITY_CLASS,
   ACCOUNT_ENTITY_TYPE,
   AccountEntity,
-} from "../jupiterone";
-import { Account } from "../onelogin/OneLoginClient";
+} from '../jupiterone';
+import { Account } from '../onelogin/OneLoginClient';
 
-import generateKey from "../utils/generateKey";
+import generateKey from '../utils/generateKey';
 
 export function createAccountEntity(account: Account): AccountEntity {
   return {
