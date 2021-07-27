@@ -1,10 +1,10 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { Entity } from '@jupiterone/integration-sdk-core';
 
-export const USER_ENTITY_TYPE = "onelogin_user";
-export const USER_ENTITY_CLASS = "User";
+export const USER_ENTITY_TYPE = 'onelogin_user';
+export const USER_ENTITY_CLASS = ['User'];
 
-export interface UserEntity extends EntityFromIntegration {
-  id: number;
+export interface UserEntity extends Entity {
+  id: string;
   displayName: string;
   activatedAt: number | null;
   createdAt: number;

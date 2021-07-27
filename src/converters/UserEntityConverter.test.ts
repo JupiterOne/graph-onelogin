@@ -1,14 +1,14 @@
-import { User } from "../onelogin/OneLoginClient";
-import { createUserEntity } from "./UserEntityConverter";
+import { User } from '../onelogin/OneLoginClient';
+import { createUserEntity } from './UserEntityConverter';
 
 const baseUser: User = {
   created_at: new Date().toString(),
-  email: "fake.email@fake.domain.com",
-  firstname: "John",
-  lastname: "Smith",
+  email: 'fake.email@fake.domain.com',
+  firstname: 'John',
+  lastname: 'Smith',
   group_id: 1,
   id: 1,
-  openid_name: "john-smith",
+  openid_name: 'john-smith',
   status: 0,
   updated_at: new Date().toString(),
   role_id: [1],
@@ -38,17 +38,17 @@ const baseUser: User = {
   trusted_idp_id: null,
 };
 
-test("should convert custom attributes", () => {
+test('should convert custom attributes', () => {
   const user: User = {
     ...baseUser,
     custom_attributes: {
-      customUserField: "custom-user-value",
-      anotherField: "another-value",
+      customUserField: 'custom-user-value',
+      anotherField: 'another-value',
     },
   };
 
   expect(createUserEntity(user)).toMatchObject({
-    "custom_attributes.customUserField": "custom-user-value",
-    "custom_attributes.anotherField": "another-value",
+    'customAttributes.customUserField': 'custom-user-value',
+    'customAttributes.anotherField': 'another-value',
   });
 });

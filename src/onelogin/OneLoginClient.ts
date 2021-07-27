@@ -1,5 +1,5 @@
-import { IntegrationLogger } from "@jupiterone/jupiter-managed-integration-sdk";
-import fetch, { RequestInit } from "node-fetch";
+import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import fetch, { RequestInit } from 'node-fetch';
 
 interface OneloginResponse {
   status: {
@@ -143,31 +143,13 @@ interface PersonalDeviceResponse extends OneloginResponse {
   };
 }
 
-export interface PersonalAppsDict {
-  [id: number]: PersonalApp[];
-}
-
-export interface PersonalDevicesDict {
-  [id: number]: PersonalDevice[];
-}
-
-export interface OneLoginDataModel {
-  accountName?: string;
-  apps: App[];
-  groups: Group[];
-  users: User[];
-  personalApps: PersonalAppsDict;
-  personalDevices: PersonalDevicesDict;
-  roles: Role[];
-}
-
 enum Method {
-  GET = "get",
-  POST = "post",
+  GET = 'get',
+  POST = 'post',
 }
 
 export default class OneLoginClient {
-  private host: string = "https://api.us.onelogin.com";
+  private host: string = 'https://api.us.onelogin.com';
   private accessToken: string;
 
   constructor(
@@ -178,13 +160,11 @@ export default class OneLoginClient {
 
   public async authenticate() {
     const result = (await this.makeRequest(
-      "/auth/oauth2/token",
+      '/auth/oauth2/token',
       Method.POST,
-      { grant_type: "client_credentials" },
+      { grant_type: 'client_credentials' },
       {
-        Authorization: `client_id:${this.clientId}, client_secret:${
-          this.clientSecret
-        }`,
+        Authorization: `client_id:${this.clientId}, client_secret:${this.clientSecret}`,
       },
     )) as AccessTokenResponse;
 
@@ -202,7 +182,7 @@ export default class OneLoginClient {
 
   public async fetchUsers(): Promise<User[]> {
     let users: User[] = [];
-    let afterCursor: string | null = "";
+    let afterCursor: string | null = '';
 
     do {
       const result = (await this.makeRequest(
@@ -220,7 +200,7 @@ export default class OneLoginClient {
             pageSize: result.data.length,
             afterCursor: result.pagination.after_cursor,
           },
-          "Fetched page of OneLogin users",
+          'Fetched page of OneLogin users',
         );
       }
     } while (afterCursor);
@@ -230,7 +210,7 @@ export default class OneLoginClient {
 
   public async fetchGroups(): Promise<Group[]> {
     let groups: Group[] = [];
-    let afterCursor: string | null = "";
+    let afterCursor: string | null = '';
 
     do {
       const result = (await this.makeRequest(
@@ -248,7 +228,7 @@ export default class OneLoginClient {
             pageSize: result.data.length,
             afterCursor: result.pagination.after_cursor,
           },
-          "Fetched page of OneLogin groups",
+          'Fetched page of OneLogin groups',
         );
       }
     } while (afterCursor);
@@ -258,7 +238,7 @@ export default class OneLoginClient {
 
   public async fetchRoles(): Promise<Role[]> {
     let roles: Role[] = [];
-    let afterCursor: string | null = "";
+    let afterCursor: string | null = '';
 
     do {
       const result = (await this.makeRequest(
@@ -276,7 +256,7 @@ export default class OneLoginClient {
             pageSize: result.data.length,
             afterCursor: result.pagination.after_cursor,
           },
-          "Fetched page of OneLogin roles",
+          'Fetched page of OneLogin roles',
         );
       }
     } while (afterCursor);
@@ -286,7 +266,7 @@ export default class OneLoginClient {
 
   public async fetchApps(): Promise<App[]> {
     let apps: App[] = [];
-    let afterCursor: string | null = "";
+    let afterCursor: string | null = '';
 
     do {
       const result = (await this.makeRequest(
@@ -304,7 +284,7 @@ export default class OneLoginClient {
             pageSize: result.data.length,
             afterCursor: result.pagination.after_cursor,
           },
-          "Fetched page of OneLogin apps",
+          'Fetched page of OneLogin apps',
         );
       }
     } while (afterCursor);
@@ -327,7 +307,7 @@ export default class OneLoginClient {
         size: result.data.length,
         userId,
       },
-      "Fetched OneLogin apps for user",
+      'Fetched OneLogin apps for user',
     );
 
     return apps;
@@ -348,7 +328,7 @@ export default class OneLoginClient {
         size: result.data.otp_devices,
         userId,
       },
-      "Fetched OneLogin devices for user",
+      'Fetched OneLogin devices for user',
     );
 
     return devices;
@@ -369,7 +349,7 @@ export default class OneLoginClient {
     let options: RequestInit = {
       method,
       headers: {
-        "Content-type": "application/json",
+        'Content-type': 'application/json',
         ...headers,
       },
     };

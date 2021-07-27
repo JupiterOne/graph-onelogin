@@ -1,13 +1,13 @@
-import { EntityFromIntegration } from "@jupiterone/jupiter-managed-integration-sdk";
+import { Entity } from '@jupiterone/integration-sdk-core';
 
-export const PERSONAL_APP_ENTITY_TYPE = "onelogin_personal_application";
-export const PERSONAL_APP_ENTITY_CLASS = "Application";
+export const PERSONAL_APP_ENTITY_TYPE = 'onelogin_personal_application';
+export const PERSONAL_APP_ENTITY_CLASS = ['Application'];
 
-export interface PersonalAppEntity extends EntityFromIntegration {
-  id: number;
+export interface PersonalAppEntity extends Entity {
+  id: string;
   name: string;
   provisioned: string;
   extension: boolean;
-  login_id: number;
+  loginId: number;
   personal: boolean;
 }
