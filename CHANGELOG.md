@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.0.0 - 2021-07-27
+
 ### Changed
 
 - Rewrite of the integration in the new SDK. This forced some small changes to
