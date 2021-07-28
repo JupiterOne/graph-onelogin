@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed `UPLOAD_ERROR` with error `NOT_ALLOWED` caused by `_icon` property on
+  app and personal app entities. Removed the `_icon` property as it is not
+  allowed to be an underscore property.
+
 ## 2.0.0 - 2021-07-27
 
 ### Changed
