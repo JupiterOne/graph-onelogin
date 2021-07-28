@@ -95,6 +95,7 @@ export interface App {
   extension: boolean;
   visible: boolean;
   provisioning: boolean;
+  awsRolesUserAttribute?: string; //not from API; we'll set this
 }
 
 export interface PersonalApp {
@@ -105,6 +106,41 @@ export interface PersonalApp {
   extension: boolean;
   login_id: number;
   personal: boolean;
+}
+
+export interface ExtendedApp {
+  id: string;
+  name: string;
+  visible: boolean;
+  description: string;
+  notes: string;
+  icon_url: string;
+  auth_method: number;
+  policy_id: null;
+  allow_assumed_signin: false;
+  tab_id: number;
+  connector_id: number;
+  created_at: string;
+  updated_at: string;
+  role_ids: number[];
+  provisioning: object;
+  sso: object;
+  configuration: object;
+  parameters: AppParameters;
+  enforcement_point: object;
+}
+
+export interface AppParameters {
+  'https://aws.amazon.com/SAML/Attributes/Role'?: ParameterProperties;
+  'https://aws.amazon.com/SAML/Attributes/RoleSession'?: ParameterProperties;
+  saml_username?: ParameterProperties;
+}
+
+export interface ParameterProperties {
+  user_attribute_mappings?: string;
+  label?: string;
+  user_attribute_macros?: string;
+  include_in_saml_assertion?: string;
 }
 
 export interface PersonalDevice {
@@ -201,8 +237,6 @@ export default class OneLoginClient {
     let afterCursor: string | null = '';
 
     do {
-      console.log('users access token:');
-      console.log(this.accessToken);
       const result = (await this.makeRequest(
         `/api/2/users?after_cursor=${afterCursor}`,
         Method.GET,
@@ -312,33 +346,17 @@ export default class OneLoginClient {
     return apps;
   }
 
-  public async fetchOneApp(appid): Promise<App[]> {
-    let apps: App[] = [];
-    let afterCursor: string | null = '';
+  public async fetchOneApp(appid): Promise<ExtendedApp> {
+    const result = (await this.makeRequest(
+      `/api/2/apps/${appid}`,
+      Method.GET,
+      {},
+      { Authorization: `bearer:${this.accessToken}` },
+    )) as any;
 
-    do {
-      const result = (await this.makeRequest(
-        `/api/2/apps/${appid}`,
-        Method.GET,
-        {},
-        { Authorization: `bearer:${this.accessToken}` },
-      )) as any;
+    console.log(result);
 
-      console.log(result);
-      if (result.data) {
-        apps = [...apps, ...result.data];
-        afterCursor = result.pagination.after_cursor;
-        this.logger.info(
-          {
-            pageSize: result.data.length,
-            afterCursor: result.pagination.after_cursor,
-          },
-          'Fetched page of OneLogin apps',
-        );
-      }
-    } while (afterCursor);
-
-    return apps;
+    return result;
   }
 
   public async fetchUserApps(userId: number): Promise<PersonalApp[]> {

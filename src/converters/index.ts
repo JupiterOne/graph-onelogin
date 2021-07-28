@@ -6,3 +6,4 @@ export { createGroupEntity } from './GroupEntityConverter';
 export { createRoleEntity } from './RoleEntityConverter';
 export { createPersonalDeviceEntity } from './PersonalDeviceEntityConverter';
 export { getServiceEntities } from './ServiceEntityConverter';
+export { convertAWSRolesToRelationships } from './convertAWSRoles';

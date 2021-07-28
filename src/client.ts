@@ -23,6 +23,7 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
  */
 export class APIClient {
   provider: OneLoginClient;
+  logger: IntegrationLogger;
   //retrieves a token automatically and applies it to subsequent requests
   constructor(readonly config: IntegrationConfig, logger: IntegrationLogger) {
     this.provider = new OneLoginClient(
@@ -31,6 +32,7 @@ export class APIClient {
       logger,
       config.apiHostname,
     );
+    this.logger = logger;
   }
 
   public async verifyAuthentication(): Promise<void> {
@@ -90,9 +92,29 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
-      const indivApp = await this.provider.fetchOneApp(application.id);
-      console.log('testing');
-      console.log(indivApp);
+      //check for special parameters to map user attributes to AWS IAM roles
+      if (/Amazon/.test(application.name) || /AWS/.test(application.name)) {
+        //is there a better way to do this? trying not to check every app, but this is brittle
+        try {
+          const indivApp = await this.provider.fetchOneApp(application.id);
+          console.log('AWS app found');
+          console.log(indivApp);
+          if (
+            indivApp.parameters &&
+            indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
+          ) {
+            application.awsRolesUserAttribute =
+              indivApp.parameters[
+                'https://aws.amazon.com/SAML/Attributes/Role'
+              ].user_attribute_mappings;
+          }
+        } catch (err) {
+          //if this bombs, don't cancel the step over it
+          this.logger.info(
+            `Application ${application.name} failed to load IAM role info`,
+          );
+        }
+      }
       await iteratee(application);
     }
   }

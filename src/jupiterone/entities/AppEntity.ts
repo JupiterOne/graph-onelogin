@@ -10,4 +10,5 @@ export interface AppEntity extends Entity {
   extension: boolean;
   visible: boolean;
   provisioning: boolean;
+  awsRolesUserAttribute?: string;
 }

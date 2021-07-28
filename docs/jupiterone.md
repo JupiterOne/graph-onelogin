@@ -164,6 +164,7 @@ The following relationships are created/mapped:
 | `onelogin_account`    | **HAS**               | `onelogin_user`                 |
 | `onelogin_group`      | **HAS**               | `onelogin_user`                 |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_application`          |
+| `onelogin_user`       | **ASSIGNED**          | `aws_iam_role`                  |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_group`                |
 | `onelogin_user`       | **ASSIGNED**          | `mfa_device`                    |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_role`                 |
