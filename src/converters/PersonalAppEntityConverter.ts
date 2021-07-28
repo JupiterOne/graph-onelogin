@@ -13,7 +13,6 @@ export function createPersonalAppEntity(app: PersonalApp): PersonalAppEntity {
     _class: PERSONAL_APP_ENTITY_CLASS,
     _key: generateKey(PERSONAL_APP_ENTITY_TYPE, app.id),
     _type: PERSONAL_APP_ENTITY_TYPE,
-    _icon: app.icon,
     id: String(app.id),
     displayName: app.name,
     icon: app.icon,
