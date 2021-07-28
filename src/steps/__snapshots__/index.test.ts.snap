@@ -223,7 +223,6 @@ Object {
       "_class": Array [
         "Application",
       ],
-      "_icon": "https://s3.amazonaws.com/onelogin-assets/images/icons/doordash.png",
       "_key": "onelogin_application_1475668",
       "_type": "onelogin_application",
       "connectorId": 68269,
