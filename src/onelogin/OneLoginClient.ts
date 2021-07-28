@@ -121,6 +121,15 @@ interface AccessTokenResponse extends OneloginResponse {
   data: AccessToken[];
 }
 
+interface AccessTokenResponseV2 extends OneloginResponse {
+  access_token: string;
+  created_at: string;
+  expires_in: number;
+  refresh_token: string;
+  token_type: string;
+  account_id: number;
+}
+
 interface UserResponse extends OneloginResponse {
   data: User[];
 }
@@ -167,16 +176,16 @@ export default class OneLoginClient {
 
   public async authenticate() {
     const result = (await this.makeRequest(
-      '/auth/oauth2/token',
+      '/auth/oauth2/v2/token',
       Method.POST,
       { grant_type: 'client_credentials' },
       {
         Authorization: `client_id:${this.clientId}, client_secret:${this.clientSecret}`,
       },
-    )) as AccessTokenResponse;
+    )) as AccessTokenResponseV2;
 
-    if (result?.data?.[0]?.access_token) {
-      this.accessToken = result.data[0].access_token;
+    if (result.access_token) {
+      this.accessToken = result.access_token;
       return;
     }
 
@@ -192,13 +201,17 @@ export default class OneLoginClient {
     let afterCursor: string | null = '';
 
     do {
+      console.log('users access token:');
+      console.log(this.accessToken);
       const result = (await this.makeRequest(
-        `/api/1/users?after_cursor=${afterCursor}`,
+        `/api/2/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
         { Authorization: `bearer:${this.accessToken}` },
       )) as UserResponse;
 
+      console.log('users:');
+      console.log(result);
       if (result.data) {
         users = [...users, ...result.data];
         afterCursor = result.pagination.after_cursor;
@@ -299,6 +312,35 @@ export default class OneLoginClient {
     return apps;
   }
 
+  public async fetchOneApp(appid): Promise<App[]> {
+    let apps: App[] = [];
+    let afterCursor: string | null = '';
+
+    do {
+      const result = (await this.makeRequest(
+        `/api/2/apps/${appid}`,
+        Method.GET,
+        {},
+        { Authorization: `bearer:${this.accessToken}` },
+      )) as any;
+
+      console.log(result);
+      if (result.data) {
+        apps = [...apps, ...result.data];
+        afterCursor = result.pagination.after_cursor;
+        this.logger.info(
+          {
+            pageSize: result.data.length,
+            afterCursor: result.pagination.after_cursor,
+          },
+          'Fetched page of OneLogin apps',
+        );
+      }
+    } while (afterCursor);
+
+    return apps;
+  }
+
   public async fetchUserApps(userId: number): Promise<PersonalApp[]> {
     const result = (await this.makeRequest(
       `/api/1/users/${userId}/apps`,
@@ -307,6 +349,7 @@ export default class OneLoginClient {
       { Authorization: `bearer:${this.accessToken}` },
     )) as PersonalAppResponse;
 
+    console.log(result);
     const apps: PersonalApp[] = result.data;
 
     this.logger.info(
@@ -348,6 +391,7 @@ export default class OneLoginClient {
     headers: {},
   ): Promise<
     | AccessTokenResponse
+    | AccessTokenResponseV2
     | GroupResponse
     | UserResponse
     | RoleResponse
@@ -356,7 +400,7 @@ export default class OneLoginClient {
     let options: RequestInit = {
       method,
       headers: {
-        'Content-type': 'application/json',
+        'Content-Type': 'application/json',
         ...headers,
       },
     };

@@ -73,6 +73,7 @@ export class APIClient {
     await this.provider.authenticate();
     const users = await this.provider.fetchUsers();
     for (const user of users) {
+      console.log(user);
       await iteratee(user);
     }
   }
@@ -89,6 +90,9 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
+      const indivApp = await this.provider.fetchOneApp(application.id);
+      console.log('testing');
+      console.log(indivApp);
       await iteratee(application);
     }
   }
