@@ -16,7 +16,9 @@ export function convertAWSRolesToRelationships(
       sourceKey: oneLoginPrincipal.id,
       role,
       relationshipType,
-      awsAccountId: application.awsAccountId, //this is not a thing. What do I want here?
+      //the following was a line in the Okta integration, but we don't have awsAccountId in the OneLogin app. It's just used to name the relationship.
+      //do we want something like that?
+      awsAccountId: '999999', //this is not a thing. What do I want here?
     });
     if (relationship) {
       relationships.push(relationship);
