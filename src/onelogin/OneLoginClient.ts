@@ -5,13 +5,6 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import fetch, { RequestInit } from 'node-fetch';
 
-const API_V1_SUCCESS_OBJECT = {
-  error: false,
-  code: 200,
-  type: 'success',
-  message: 'Success',
-};
-
 interface OneloginResponse {
   status: {
     error: boolean;

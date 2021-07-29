@@ -47,7 +47,8 @@ test('should convert custom attributes', () => {
     },
   };
 
-  expect(createUserEntity(user)).toMatchObject({
+  const roleByIdMap = {};
+  expect(createUserEntity(user, roleByIdMap)).toMatchObject({
     'customAttributes.customUserField': 'custom-user-value',
     'customAttributes.anotherField': 'another-value',
   });
