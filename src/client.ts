@@ -75,7 +75,6 @@ export class APIClient {
     await this.provider.authenticate();
     const users = await this.provider.fetchUsers();
     for (const user of users) {
-      console.log(user);
       await iteratee(user);
     }
   }

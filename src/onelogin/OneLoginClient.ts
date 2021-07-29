@@ -5,6 +5,13 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import fetch, { RequestInit } from 'node-fetch';
 
+const API_V1_SUCCESS_OBJECT = {
+  error: false,
+  code: 200,
+  type: 'success',
+  message: 'Success',
+};
+
 interface OneloginResponse {
   status: {
     error: boolean;
@@ -238,14 +245,12 @@ export default class OneLoginClient {
 
     do {
       const result = (await this.makeRequest(
-        `/api/2/users?after_cursor=${afterCursor}`,
+        `/api/1/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
 
-      console.log('users:');
-      console.log(result);
       if (result.data) {
         users = [...users, ...result.data];
         afterCursor = result.pagination.after_cursor;
@@ -271,7 +276,7 @@ export default class OneLoginClient {
         `/api/1/groups?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as GroupResponse;
 
       if (result.data) {
@@ -299,7 +304,7 @@ export default class OneLoginClient {
         `/api/1/roles?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as RoleResponse;
 
       if (result.data) {
@@ -327,7 +332,7 @@ export default class OneLoginClient {
         `/api/1/apps?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as AppResponse;
 
       if (result.data) {
@@ -346,15 +351,15 @@ export default class OneLoginClient {
     return apps;
   }
 
+  //note that this is a v2 API call, which does not use the result.data structure
+  //results are returned directly. Since this is just one app, v2 API pagination is not required
   public async fetchOneApp(appid): Promise<ExtendedApp> {
     const result = (await this.makeRequest(
       `/api/2/apps/${appid}`,
       Method.GET,
       {},
-      { Authorization: `bearer:${this.accessToken}` },
+      { Authorization: `bearer ${this.accessToken}` },
     )) as any;
-
-    console.log(result);
 
     return result;
   }
@@ -364,10 +369,9 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/apps`,
       Method.GET,
       {},
-      { Authorization: `bearer:${this.accessToken}` },
+      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalAppResponse;
 
-    console.log(result);
     const apps: PersonalApp[] = result.data;
 
     this.logger.info(
@@ -386,7 +390,7 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/otp_devices`,
       Method.GET,
       {},
-      { Authorization: `bearer:${this.accessToken}` },
+      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalDeviceResponse;
 
     const devices: PersonalDevice[] = result.data.otp_devices;
@@ -428,6 +432,7 @@ export default class OneLoginClient {
     }
 
     const response = await fetch(this.host + url, options);
+<<<<<<< HEAD
 
     if (response.status === 200) {
       return response.json();
@@ -439,5 +444,18 @@ export default class OneLoginClient {
       statusText: response.statusText,
       endpoint: this.host + url,
     });
+=======
+    const result = await response.json();
+    //if a bad call is made, an object is returned with a statusCode field set to a non-200 value
+    if (result.statusCode && !(result.statusCode === 200)) {
+      throw new IntegrationProviderAPIError({
+        cause: result,
+        endpoint: this.host + url,
+        status: result.statusCode,
+        statusText: result.message,
+      });
+    }
+    return result;
+>>>>>>> Working initial version
   }
 }
