@@ -425,19 +425,6 @@ export default class OneLoginClient {
     }
 
     const response = await fetch(this.host + url, options);
-<<<<<<< HEAD
-
-    if (response.status === 200) {
-      return response.json();
-    }
-
-    throw new IntegrationProviderAPIError({
-      cause: undefined,
-      status: response.status.toString(),
-      statusText: response.statusText,
-      endpoint: this.host + url,
-    });
-=======
     const result = await response.json();
     //if a bad call is made, an object is returned with a statusCode field set to a non-200 value
     if (result.statusCode && !(result.statusCode === 200)) {
@@ -449,6 +436,5 @@ export default class OneLoginClient {
       });
     }
     return result;
->>>>>>> Working initial version
   }
 }

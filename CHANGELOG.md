@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+- Mapping Onelogin users to AWS roles, if an AWS application in OneLogin has the
+  Role parameter defined to point to a user attribute and the AWS Role already
+  exists in the J1 graph.
+
 ## [2.1.1] 2021-08-05
 
 ### Fixed
