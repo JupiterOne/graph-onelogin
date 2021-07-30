@@ -50,7 +50,7 @@ function redact(entry): void {
 
   //we can just get rid of all response content if this was an Oauth token call
   const requestUrl = entry.request.url;
-  if (requestUrl.match(/api.us.onelogin.com\/auth\/oauth2\/token/)) {
+  if (requestUrl.match(/onelogin.com\/auth\/oauth2\//)) {
     entry.response.content.text = JSON.stringify(getRedactedOAuthResponse());
     return;
   }
