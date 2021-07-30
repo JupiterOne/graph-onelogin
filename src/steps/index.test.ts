@@ -15,6 +15,8 @@ import { fetchAccountDetails } from './account';
 import { integrationConfig } from '../../test/config';
 import { setupOneloginRecording } from '../../test/recording';
 
+jest.setTimeout(10000);
+
 let recording: Recording;
 
 afterEach(async () => {

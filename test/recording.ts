@@ -23,16 +23,12 @@ export function setupOneloginRecording(
 function getRedactedOAuthResponse() {
   //OneLogin responses have a certain structure that the client expects
   return {
-    data: [
-      {
-        access_token: '[REDACTED]',
-        created_at: Date.now(),
-        expires_in: 9999,
-        refresh_token: '[REDACTED]',
-        token_type: 'Bearer',
-        account_id: 999999,
-      },
-    ],
+    access_token: '[REDACTED]',
+    created_at: Date.now(),
+    expires_in: 9999,
+    refresh_token: '[REDACTED]',
+    token_type: 'Bearer',
+    account_id: 999999,
   };
 }
 

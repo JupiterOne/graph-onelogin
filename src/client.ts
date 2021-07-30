@@ -96,8 +96,6 @@ export class APIClient {
         //is there a better way to do this? trying not to check every app, but this is brittle
         try {
           const indivApp = await this.provider.fetchOneApp(application.id);
-          console.log('AWS app found');
-          console.log(indivApp);
           if (
             indivApp.parameters &&
             indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']

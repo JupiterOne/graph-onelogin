@@ -21,7 +21,9 @@ export function createUserEntity(
   if (user.role_id) {
     for (const roleId of user.role_id) {
       const role = roleByIdMap[String(roleId)];
-      roles = roles + role.name + ';';
+      if (role) {
+        roles = roles + role.name + ';';
+      }
     }
   }
   return {
