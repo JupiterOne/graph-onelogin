@@ -1,4 +1,8 @@
-import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import {
+  IntegrationLogger,
+  IntegrationProviderAPIError,
+  IntegrationProviderAuthenticationError,
+} from '@jupiterone/integration-sdk-core';
 import fetch, { RequestInit } from 'node-fetch';
 
 interface OneloginResponse {
@@ -168,16 +172,15 @@ export default class OneLoginClient {
       },
     )) as AccessTokenResponse;
 
-    if (result.data) {
-      const data = result.data.pop();
-
-      if (data) {
-        this.accessToken = data.access_token;
-        return;
-      }
+    if (result?.data?.[0]?.access_token) {
+      return result.data[0].access_token;
     }
 
-    throw new Error(result.status.message);
+    throw new IntegrationProviderAuthenticationError({
+      endpoint: this.host + '/auth/oauth2/token',
+      status: result.status.code.toString(),
+      statusText: result.status.message,
+    });
   }
 
   public async fetchUsers(): Promise<User[]> {
@@ -360,6 +363,15 @@ export default class OneLoginClient {
 
     const response = await fetch(this.host + url, options);
 
-    return response.json();
+    if (response.status === 200) {
+      return response.json();
+    }
+
+    throw new IntegrationProviderAPIError({
+      cause: undefined,
+      status: response.status.toString(),
+      statusText: response.statusText,
+      endpoint: this.host + url,
+    });
   }
 }

@@ -11,7 +11,7 @@ Object {
       "_type": "onelogin_account",
       "displayName": "Local Integration",
       "name": "Local Integration",
-      "webLink": "https://orgUrl.com",
+      "webLink": "https://jupiterone.onelogin.com",
     },
     Object {
       "_class": Array [

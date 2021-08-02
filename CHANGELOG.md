@@ -8,6 +8,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added tests for `validateInvocation()` function.
+
+### Fixed
+
+- Previously, validation errors passed through the client had their `status` and
+  `statusText` values obscured, thus showing `undefined undefined` in user job
+  logs. Fixed errors to show proper `status` and `statusText`, such as
+  `401 Unauthorized`.
+
+## 2.0.1 - 2021-07-28
+
 ### Fixed
 
 - Fixed `UPLOAD_ERROR` with error `NOT_ALLOWED` caused by `_icon` property on
