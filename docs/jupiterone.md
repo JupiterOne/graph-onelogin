@@ -62,7 +62,7 @@ be found [here][1].
 
 #### Authentication Errors
 
-This integration's authentication is achieved by fetching an Oauth token from
+This integration's authentication is achieved by fetching an OAuth token from
 OneLogin. You can reproduce this authentication strategy by running the
 following curl, replacing `<CLIENT_ID>` and `<CLIENT_SECRET>` with your own:
 
