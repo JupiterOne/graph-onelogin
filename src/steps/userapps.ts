@@ -69,12 +69,15 @@ export async function fetchUserApps({
         // has a parameter of `parameters['https://aws.amazon.com/SAML/Attributes/Role'`),
         // the application parameter may have defined a property `awsRolesUserAttribute` that
         // contains a string of the name of the user property, which itself should have
-        // a semi-colon delimited string of the Roles in AWS for this user.
+        // a comma-delimited string of the Roles in AWS for this user.
         if (appEntity.awsRolesUserAttribute) {
           const userAttribute: string = appEntity.awsRolesUserAttribute!;
           try {
+            console.log(`the value to cehck is ${userAttribute}`);
+            console.log(userEntity);
             const userRolesValue: string = String(userEntity[userAttribute]);
-            const roles = userRolesValue.split(';');
+            const roles = userRolesValue.split(',');
+            console.log(roles);
             const awsRelationships = convertAWSRolesToRelationships(
               userEntity,
               roles,
@@ -86,7 +89,8 @@ export async function fetchUserApps({
               }
             }
           } catch (err) {
-            //what to do here? maybe just ignore it if it fails, for now
+            //we couldn't map to AWS IAM Roles for this user
+            //not the end of the world
           }
         }
       }

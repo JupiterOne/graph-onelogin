@@ -4,6 +4,9 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { UserEntity, GroupEntity } from '../jupiterone';
 
+//example that matches: 'arn:aws:iam::123456789987:role/Great_Job123_For_Some-body'
+const ARN_REGEX = /^arn:aws:iam::[0-9]+:role\/([a-zA-Z0-9-_]+)/;
+
 export function convertAWSRolesToRelationships(
   oneLoginPrincipal: UserEntity | GroupEntity,
   roles: string[],
@@ -11,14 +14,12 @@ export function convertAWSRolesToRelationships(
 ): MappedRelationship[] {
   const relationships: MappedRelationship[] = [];
   for (const role of roles) {
-    if (!(role === '')) {
+    const cleanRole = role.trim();
+    if (ARN_REGEX.test(cleanRole)) {
       const relationship = mapAWSRoleAssignment({
         sourceKey: oneLoginPrincipal.id,
-        role,
+        roleArn: cleanRole,
         relationshipType,
-        //the following was a line in the Okta integration, but we don't have awsAccountId in the OneLogin app. It's just used to name the relationship.
-        //do we want something like that?
-        awsAccountId: '999999', //this is not a thing. What do I want here?
       });
       if (relationship) {
         relationships.push(relationship);
@@ -44,16 +45,18 @@ export function convertAWSRolesToRelationships(
  */
 function mapAWSRoleAssignment({
   sourceKey,
-  role,
+  roleArn,
   relationshipType,
-  awsAccountId,
 }: {
   sourceKey: string;
-  role: string;
+  roleArn: string;
   relationshipType: string;
-  awsAccountId: string;
 }): MappedRelationship | undefined {
-  const roleArn = `arn:aws:iam::${awsAccountId}:role/${role}`;
+  const match = roleArn.match(ARN_REGEX);
+  let role = '';
+  if (match) {
+    role = match[1]; //this will be the capture group of the regex (the part in parens)
+  }
   return {
     _key: `${sourceKey}|assigned|${roleArn}`,
     _type: relationshipType,

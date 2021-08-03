@@ -10,6 +10,7 @@ import {
   PersonalApp,
   PersonalDevice,
 } from './onelogin';
+import convertUserAttribute from './utils/convertUserAttribute';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -91,26 +92,23 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
-      //check for special parameters to map user attributes to AWS IAM roles
-      if (/Amazon/.test(application.name) || /AWS/.test(application.name)) {
-        //is there a better way to do this? trying not to check every app, but this is brittle
-        try {
-          const indivApp = await this.provider.fetchOneApp(application.id);
-          if (
-            indivApp.parameters &&
+      //check for special parameter to map user attributes to AWS IAM roles
+      try {
+        const indivApp = await this.provider.fetchOneApp(application.id);
+        if (
+          indivApp.parameters &&
+          indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
+        ) {
+          application.awsRolesUserAttribute = convertUserAttribute(
             indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
-          ) {
-            application.awsRolesUserAttribute =
-              indivApp.parameters[
-                'https://aws.amazon.com/SAML/Attributes/Role'
-              ].user_attribute_mappings;
-          }
-        } catch (err) {
-          //if this bombs, don't cancel the step over it
-          this.logger.info(
-            `Application ${application.name} failed to load IAM role info`,
+              .user_attribute_mappings,
           );
         }
+      } catch (err) {
+        //if this bombs, don't cancel the step over it
+        this.logger.info(
+          `Application ${application.name} failed to load IAM role info`,
+        );
       }
       await iteratee(application);
     }
