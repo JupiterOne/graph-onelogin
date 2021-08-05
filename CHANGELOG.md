@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added the ability to pass a different API hostname (e.g.
+  `https://api.eu.onelogin.com`) to fetch data from different OneLogin
+  environments.
+
 ### Fixed
 
 - Fixed an issue introduced in 2.0.2 that inadvertantly stopped referencing the
