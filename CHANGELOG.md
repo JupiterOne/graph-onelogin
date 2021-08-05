@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.1.0] 2021-08-05
+
 ### Added
 
 - Added the ability to pass a different API hostname (e.g.
