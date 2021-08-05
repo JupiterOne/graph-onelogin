@@ -1,4 +1,7 @@
-import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
+import {
+  IntegrationLogger,
+  IntegrationProviderAuthenticationError,
+} from '@jupiterone/integration-sdk-core';
 
 import { IntegrationConfig } from './config';
 import {
@@ -38,7 +41,16 @@ export class APIClient {
 
   public async verifyAuthentication(): Promise<void> {
     //lightweight authen check
-    await this.provider.authenticate();
+    try {
+      await this.provider.authenticate();
+    } catch (err) {
+      throw new IntegrationProviderAuthenticationError({
+        cause: err,
+        endpoint: this.config.orgUrl || 'onelogin.com',
+        status: err.status,
+        statusText: err.statusText,
+      });
+    }
   }
 
   /**
