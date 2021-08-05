@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed an issue introduced in 2.0.2 that inadvertantly stopped referencing the
+  `authToken` returned from the `/oauth2/token` call.
+
 ## 2.0.2 - 2021-08-03
 
 ### Added

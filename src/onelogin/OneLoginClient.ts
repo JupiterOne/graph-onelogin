@@ -173,7 +173,8 @@ export default class OneLoginClient {
     )) as AccessTokenResponse;
 
     if (result?.data?.[0]?.access_token) {
-      return result.data[0].access_token;
+      this.accessToken = result.data[0].access_token;
+      return;
     }
 
     throw new IntegrationProviderAuthenticationError({
