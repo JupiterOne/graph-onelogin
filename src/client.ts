@@ -10,7 +10,7 @@ import {
   PersonalApp,
   PersonalDevice,
 } from './onelogin';
-import convertUserAttribute from './utils/convertUserAttribute';
+import convertUserAttributeName from './utils/convertUserAttributeName';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -99,7 +99,7 @@ export class APIClient {
           indivApp.parameters &&
           indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
         ) {
-          application.awsRolesUserAttribute = convertUserAttribute(
+          application.awsRolesUserAttribute = convertUserAttributeName(
             indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
               .user_attribute_mappings,
           );

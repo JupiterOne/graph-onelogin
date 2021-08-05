@@ -1,5 +1,8 @@
-export default function convertUserAttribute(attr: string | undefined) {
-  // if the user attribute name is a standard one, don't change a thing
+export default function convertUserAttributeName(attr: string | undefined) {
+  // the goal of this function is to convert a user attribute field name,
+  // from the way OneLogin reports it as an application parameter property
+  // to the way the JupiterOne userEntity records the same property
+  // if the user attribute name is not a custom one, it's simple - don't change a thing
   // if the user attribute name is a custom one, convert from:
   // custom_attribute_customAttributeName
   // to:
