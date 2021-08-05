@@ -48,7 +48,18 @@ export interface IntegrationConfig extends IntegrationInstanceConfig {
   /**
    * The Onelogin organization URL. Only used to create a weblink to the account.
    */
-  orgUrl?: string;
+  orgUrl?: string | null;
+
+  /**
+   * The Onelogin API hostname. https://developers.onelogin.com/api-docs/2/getting-started/dev-overview
+   *
+   * Options:
+   *   - https://api.us.onelogin.com
+   *   - https://api.eu.onelogin.com
+   *
+   * Defaults to https://api.us.onelogin.com.
+   */
+  apiHostname?: string | null;
 }
 
 export async function validateInvocation(

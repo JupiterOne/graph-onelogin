@@ -33,7 +33,7 @@ interface AccessToken {
 export interface Account {
   id: string;
   name: string;
-  orgUrl: string | undefined;
+  orgUrl: string | undefined | null;
 }
 
 export interface User {
@@ -153,14 +153,17 @@ enum Method {
 }
 
 export default class OneLoginClient {
-  private host: string = 'https://api.us.onelogin.com';
+  private host: string;
   private accessToken: string;
 
   constructor(
     private clientId: string,
     private clientSecret: string,
     private readonly logger: IntegrationLogger,
-  ) {}
+    host?: string | null,
+  ) {
+    this.host = host || 'https://api.us.onelogin.com';
+  }
 
   public async authenticate() {
     const result = (await this.makeRequest(
@@ -173,7 +176,8 @@ export default class OneLoginClient {
     )) as AccessTokenResponse;
 
     if (result?.data?.[0]?.access_token) {
-      return result.data[0].access_token;
+      this.accessToken = result.data[0].access_token;
+      return;
     }
 
     throw new IntegrationProviderAuthenticationError({

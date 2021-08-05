@@ -38,6 +38,22 @@ test('should succeed with valid credentials', async () => {
   await expect(validateInvocation(executionContext)).resolves.toBeUndefined();
 });
 
+test('should succeed when provided API hostname', async () => {
+  recording = setupRecording({
+    directory: __dirname,
+    name: 'validateInvocation:success:providedApiHostname',
+  });
+
+  const executionContext = createMockExecutionContext({
+    instanceConfig: {
+      ...integrationConfig,
+      apiHostname: 'https://api.us.onelogin.com',
+    },
+  });
+
+  await expect(validateInvocation(executionContext)).resolves.toBeUndefined();
+});
+
 test('should fail if Client ID is invalid', async () => {
   recording = setupRecording({
     directory: __dirname,
