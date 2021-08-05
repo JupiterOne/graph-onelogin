@@ -4,9 +4,6 @@ export default function convertUserAttribute(attr: string | undefined) {
   // custom_attribute_customAttributeName
   // to:
   // customAttributes.customAttributeName'
-  console.log(`aws attr was : ${attr}`);
-  //cheating for now because I'm having pain with camelcase conversions of things like custom_attribute_SuperLongAWSRoleArn
-  return 'customAttributes.superLongAwsRoleArn';
   if (attr) {
     const regex = /custom_attribute_([a-zA-Z-_]+)/;
     const match = attr.match(regex);
@@ -14,7 +11,20 @@ export default function convertUserAttribute(attr: string | undefined) {
       const attrName = match[1];
       const decapFirstLetter =
         attrName[0].toLowerCase() + attrName.substring(1);
-      return 'customAttributes.' + decapFirstLetter;
+      //for most customer attribute names the following is enough
+      const dstr = 'customAttributes.' + decapFirstLetter;
+      //but in the case that a custom attribute name has an acronym embedded in it,
+      //we have to detect multiple capital letters in a row and convert them to
+      //true camelCase. For example, myLongAWSAttribute ==> myLongAwsAttribute
+      return dstr.replace(/([A-Z]+)/g, function (a) {
+        if (a.length > 2) {
+          return (
+            a[0] + a.substr(1, a.length - 2).toLowerCase() + a[a.length - 1]
+          );
+        } else {
+          return a;
+        }
+      });
     } else {
       return attr;
     }

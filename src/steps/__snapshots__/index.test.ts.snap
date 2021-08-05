@@ -440,56 +440,6 @@ Object {
     },
     Object {
       "_class": "ASSIGNED",
-      "_key": "137729105|assigned|arn:aws:iam::999999:role/Ninja",
-      "_mapping": Object {
-        "relationshipDirection": "REVERSE",
-        "skipTargetCreation": true,
-        "sourceEntityKey": "137729105",
-        "targetEntity": Object {
-          "_class": "AccessRole",
-          "_key": "arn:aws:iam::999999:role/Ninja",
-          "_type": "aws_iam_role",
-          "displayName": "Ninja",
-          "name": "Ninja",
-          "roleName": "Ninja",
-        },
-        "targetFilterKeys": Array [
-          Array [
-            "_type",
-            "_key",
-          ],
-        ],
-      },
-      "_type": "onelogin_user_assigned_aws_iam_role",
-      "displayName": "ASSIGNED",
-    },
-    Object {
-      "_class": "ASSIGNED",
-      "_key": "137729105|assigned|arn:aws:iam::999999:role/Cryptozoologist",
-      "_mapping": Object {
-        "relationshipDirection": "REVERSE",
-        "skipTargetCreation": true,
-        "sourceEntityKey": "137729105",
-        "targetEntity": Object {
-          "_class": "AccessRole",
-          "_key": "arn:aws:iam::999999:role/Cryptozoologist",
-          "_type": "aws_iam_role",
-          "displayName": "Cryptozoologist",
-          "name": "Cryptozoologist",
-          "roleName": "Cryptozoologist",
-        },
-        "targetFilterKeys": Array [
-          Array [
-            "_type",
-            "_key",
-          ],
-        ],
-      },
-      "_type": "onelogin_user_assigned_aws_iam_role",
-      "displayName": "ASSIGNED",
-    },
-    Object {
-      "_class": "ASSIGNED",
       "_fromEntityKey": "onelogin_user_137729105",
       "_key": "onelogin_user_137729105|assigned|onelogin_application_1475668",
       "_toEntityKey": "onelogin_application_1475668",
@@ -513,9 +463,8 @@ Object {
     "onelogin_application",
     "onelogin_account_has_application",
     "onelogin_user_assigned_application",
-    "onelogin_user_assigned_aws_iam_role",
   ],
   "numCollectedEntities": 13,
-  "numCollectedRelationships": 26,
+  "numCollectedRelationships": 24,
 }
 `;

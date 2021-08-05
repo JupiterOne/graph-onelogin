@@ -73,11 +73,8 @@ export async function fetchUserApps({
         if (appEntity.awsRolesUserAttribute) {
           const userAttribute: string = appEntity.awsRolesUserAttribute!;
           try {
-            console.log(`the value to cehck is ${userAttribute}`);
-            console.log(userEntity);
             const userRolesValue: string = String(userEntity[userAttribute]);
             const roles = userRolesValue.split(',');
-            console.log(roles);
             const awsRelationships = convertAWSRolesToRelationships(
               userEntity,
               roles,
