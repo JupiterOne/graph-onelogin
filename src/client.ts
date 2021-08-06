@@ -29,6 +29,7 @@ export class APIClient {
       config.clientId,
       config.clientSecret,
       logger,
+      config.apiHostname,
     );
   }
 

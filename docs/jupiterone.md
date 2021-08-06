@@ -64,11 +64,12 @@ be found [here][1].
 
 This integration's authentication is achieved by fetching an OAuth token from
 OneLogin. You can reproduce this authentication strategy by running the
-following curl, replacing `<CLIENT_ID>` and `<CLIENT_SECRET>` with your own:
+following curl, replacing `<CLIENT_ID>` and `<CLIENT_SECRET>` with your own.
+`<API_HOSTNAME>` defaults to `https://api.us.onelogin.com`:
 
 ```
 curl --request POST \
-  --url https://api.us.onelogin.com/auth/oauth2/v2/token \
+  --url <API_HOSTNAME> \
   --header 'authorization: client_id:<CLIENT_ID>, client_secret:<CLIENT_SECRET>' \
   --header 'content-type: application/json' \
   --data '{

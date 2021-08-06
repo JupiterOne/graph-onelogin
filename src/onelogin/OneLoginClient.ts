@@ -153,7 +153,7 @@ enum Method {
 }
 
 export default class OneLoginClient {
-  private host: string;
+  readonly host: string;
   private accessToken: string;
 
   constructor(
