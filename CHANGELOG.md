@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.1.1] 2021-08-05
+
+### Fixed
+
+- Passed hostname through `APIClient` to `OneLoginClient`.
+
 ## [2.1.0] 2021-08-05
 
 ### Added
