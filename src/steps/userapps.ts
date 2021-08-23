@@ -8,7 +8,10 @@ import {
 
 import { createAPIClient } from '../client';
 import { IntegrationConfig } from '../config';
-import { createPersonalAppEntity } from '../converters';
+import {
+  createPersonalAppEntity,
+  convertAWSRolesToRelationships,
+} from '../converters';
 import {
   UserEntity,
   AppEntity,
@@ -19,6 +22,8 @@ import {
   USER_ENTITY_TYPE,
   USER_APP_RELATIONSHIP_TYPE,
   APP_ENTITY_TYPE,
+  USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+  AWS_IAM_ROLE_ENTITY_TYPE,
 } from '../jupiterone';
 
 export async function fetchUserApps({
@@ -48,15 +53,43 @@ export async function fetchUserApps({
 
   for (const userEntity of userEntities) {
     await apiClient.iterateUserApps(userEntity.id, async (userApp) => {
+      const appEntity = appByIdMap[userApp.id];
       if (appByIdMap[userApp.id]) {
         //in this case, it is an organization app
         await jobState.addRelationship(
           createDirectRelationship({
             _class: RelationshipClass.ASSIGNED,
             from: userEntity,
-            to: appByIdMap[userApp.id],
+            to: appEntity,
           }),
         );
+
+        // check for AWS IAM mapping
+        // When an Onelogin application represents access to an AWS Account (the application
+        // has a parameter of `parameters['https://aws.amazon.com/SAML/Attributes/Role'`),
+        // the application parameter may have defined a property `awsRolesUserAttribute` that
+        // contains a string of the name of the user property, which itself should have
+        // a comma-delimited string of the Roles in AWS for this user.
+        if (appEntity.awsRolesUserAttribute) {
+          const userAttribute: string = appEntity.awsRolesUserAttribute!;
+          try {
+            const userRolesValue: string = String(userEntity[userAttribute]);
+            const roles = userRolesValue.split(',');
+            const awsRelationships = convertAWSRolesToRelationships(
+              userEntity,
+              roles,
+              USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+            );
+            for (const rel of awsRelationships) {
+              if (!jobState.hasKey(rel._key)) {
+                await jobState.addRelationship(rel);
+              }
+            }
+          } catch (err) {
+            //we couldn't map to AWS IAM Roles for this user
+            //not the end of the world
+          }
+        }
       }
 
       //documentation and experiments suggest that a user's personal apps
@@ -94,6 +127,12 @@ export const userAppSteps: IntegrationStep<IntegrationConfig>[] = [
         _class: RelationshipClass.ASSIGNED,
         sourceType: USER_ENTITY_TYPE,
         targetType: APP_ENTITY_TYPE,
+      },
+      {
+        _type: USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+        _class: RelationshipClass.ASSIGNED,
+        sourceType: USER_ENTITY_TYPE,
+        targetType: AWS_IAM_ROLE_ENTITY_TYPE,
       },
       {
         _type: USER_PERSONAL_APP_RELATIONSHIP_TYPE,

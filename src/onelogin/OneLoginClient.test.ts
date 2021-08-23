@@ -1,10 +1,10 @@
 import {
   createMockIntegrationLogger,
   Recording,
-  setupRecording,
 } from '@jupiterone/integration-sdk-testing';
 
 import { integrationConfig } from '../../test/config';
+import { setupOneloginRecording } from '../../test/recording';
 import OneLoginClient from './OneLoginClient';
 
 let recording: Recording;
@@ -17,7 +17,7 @@ afterEach(async () => {
 
 describe('fetchUsers', () => {
   test('success', async () => {
-    recording = setupRecording({
+    recording = setupOneloginRecording({
       directory: __dirname,
       name: 'fetchUsers',
       options: {

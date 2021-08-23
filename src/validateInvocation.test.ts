@@ -2,10 +2,10 @@ import { IntegrationValidationError } from '@jupiterone/integration-sdk-core';
 import {
   createMockExecutionContext,
   Recording,
-  setupRecording,
 } from '@jupiterone/integration-sdk-testing';
 import { IntegrationConfig, validateInvocation } from './config';
 import { integrationConfig } from '../test/config';
+import { setupOneloginRecording } from '../test/recording';
 
 let recording: Recording;
 
@@ -26,7 +26,7 @@ test('should fail with invalid config', async () => {
 });
 
 test('should succeed with valid credentials', async () => {
-  recording = setupRecording({
+  recording = setupOneloginRecording({
     directory: __dirname,
     name: 'validateInvocation:success',
   });
@@ -39,7 +39,7 @@ test('should succeed with valid credentials', async () => {
 });
 
 test('should succeed when provided API hostname', async () => {
-  recording = setupRecording({
+  recording = setupOneloginRecording({
     directory: __dirname,
     name: 'validateInvocation:success:providedApiHostname',
   });
@@ -55,7 +55,7 @@ test('should succeed when provided API hostname', async () => {
 });
 
 test('should fail if Client ID is invalid', async () => {
-  recording = setupRecording({
+  recording = setupOneloginRecording({
     directory: __dirname,
     name: 'validateInvocation:invalidClientId',
     options: {
@@ -71,12 +71,12 @@ test('should fail if Client ID is invalid', async () => {
   });
 
   await expect(validateInvocation(executionContext)).rejects.toThrow(
-    `Provider API failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Unauthorized`,
+    `Provider authentication failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Authentication Failure`,
   );
 });
 
 test('should fail if Client secret is invalid', async () => {
-  recording = setupRecording({
+  recording = setupOneloginRecording({
     directory: __dirname,
     name: 'validateInvocation:invalidClientSecret',
     options: {
@@ -92,6 +92,6 @@ test('should fail if Client secret is invalid', async () => {
   });
 
   await expect(validateInvocation(executionContext)).rejects.toThrow(
-    `Provider API failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Unauthorized`,
+    `Provider authentication failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Authentication Failure`,
   );
 });

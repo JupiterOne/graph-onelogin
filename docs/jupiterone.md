@@ -5,6 +5,7 @@
 - Visualize OneLogin users, groups, roles, devices, applications, and services
   in the JupiterOne graph.
 - Map OneLogin users to employees in your JupiterOne account.
+- Map OneLogin users to their AWS IAM Roles where applicable.
 - Monitor changes to OneLogin users and access management data using JupiterOne
   alerts.
 - Create an employee entity that is used to map users across your organization
@@ -85,40 +86,13 @@ curl --request POST \
 4. Click the **trash can** icon.
 5. Click the **Remove** button to delete the integration.
 
-## Data Model
+## Notes on mapping to AWS IAM roles
 
-### Entities
-
-The following entity resources are ingested when the integration runs:
-
-| OneLogin Entity Resource | \_type : \_class of the Entity                  |
-| ------------------------ | ----------------------------------------------- |
-| Account                  | `onelogin_account` : `Account`                  |
-| Group                    | `onelogin_group` : `UserGroup`                  |
-| OneLogin Role            | `onelogin_role` : `AccessRole`                  |
-| User                     | `onelogin_user` : `User`                        |
-| App                      | `onelogin_application` : `Application`          |
-| Personal App             | `onelogin_personal_application` : `Application` |
-| Personal Device          | `mfa_device` : `[Key, AccessKey]`               |
-| Service (SSO & MFA)      | `onelogin_service` : `['Service', 'Control']`   |
-
-### Relationships
-
-The following relationships are created/mapped:
-
-| From               | Type         | To                              |
-| ------------------ | ------------ | ------------------------------- |
-| `onelogin_account` | **HAS**      | `onelogin_group`                |
-| `onelogin_account` | **HAS**      | `onelogin_role`                 |
-| `onelogin_account` | **HAS**      | `onelogin_user`                 |
-| `onelogin_account` | **HAS**      | `onelogin_application`          |
-| `onelogin_account` | **HAS**      | `onelogin_service`              |
-| `onelogin_user`    | **ASSIGNED** | `onelogin_application`          |
-| `onelogin_user`    | **ASSIGNED** | `onelogin_group`                |
-| `onelogin_user`    | **HAS**      | `onelogin_personal_application` |
-| `onelogin_user`    | **ASSIGNED** | `onelogin_role`                 |
-| `onelogin_user`    | **ASSIGNED** | `mfa_device`                    |
-| `onelogin_group`   | **HAS**      | `onelogin_user`                 |
+The integration assumes that your OneLogin account has configured parameters on
+an AWS application (at the application level) to specify the user attribute that
+contains that user's AWS IAM Roles. If an individual user has manually-assigned
+override values specified for their AWS application parameters, the integration
+will not be aware of it.
 
 [1]:
   https://developers.onelogin.com/api-docs/1/getting-started/working-with-api-credentials
@@ -130,7 +104,7 @@ NOTE: ALL OF THE FOLLOWING DOCUMENTATION IS GENERATED USING THE
 "j1-integration document" COMMAND. DO NOT EDIT BY HAND! PLEASE SEE THE DEVELOPER
 DOCUMENTATION FOR USAGE INFORMATION:
 
-https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
+https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 ********************************************************************************
 -->
 
@@ -164,6 +138,7 @@ The following relationships are created/mapped:
 | `onelogin_account`    | **HAS**               | `onelogin_user`                 |
 | `onelogin_group`      | **HAS**               | `onelogin_user`                 |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_application`          |
+| `onelogin_user`       | **ASSIGNED**          | `aws_iam_role`                  |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_group`                |
 | `onelogin_user`       | **ASSIGNED**          | `mfa_device`                    |
 | `onelogin_user`       | **ASSIGNED**          | `onelogin_role`                 |

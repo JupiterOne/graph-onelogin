@@ -67,7 +67,7 @@ export async function fetchUsers({
 
   await apiClient.iterateUsers(async (user) => {
     const userEntity = (await jobState.addEntity(
-      createUserEntity(user),
+      createUserEntity(user, roleByIdMap),
     )) as UserEntity;
     userEntities.push(userEntity);
 

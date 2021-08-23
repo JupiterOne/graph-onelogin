@@ -2,12 +2,30 @@ import {
   convertProperties,
   parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
-import { USER_ENTITY_CLASS, USER_ENTITY_TYPE, UserEntity } from '../jupiterone';
+import {
+  USER_ENTITY_CLASS,
+  USER_ENTITY_TYPE,
+  UserEntity,
+  IdEntityMap,
+  RoleEntity,
+} from '../jupiterone';
 import { User } from '../onelogin/OneLoginClient';
 
 import generateKey from '../utils/generateKey';
 
-export function createUserEntity(user: User): UserEntity {
+export function createUserEntity(
+  user: User,
+  roleByIdMap: IdEntityMap<RoleEntity>,
+): UserEntity {
+  let roles = '';
+  if (user.role_id) {
+    for (const roleId of user.role_id) {
+      const role = roleByIdMap[String(roleId)];
+      if (role) {
+        roles = roles + role.name + ';';
+      }
+    }
+  }
   return {
     _key: generateKey(USER_ENTITY_TYPE, user.id),
     _type: USER_ENTITY_TYPE,
@@ -47,6 +65,7 @@ export function createUserEntity(user: User): UserEntity {
     title: user.title,
     state: user.state,
     trustedIdpId: user.trusted_idp_id,
+    roles: roles,
     ...convertProperties(user.custom_attributes, {
       prefix: 'customAttributes', //used to be custom_attributes
     }),

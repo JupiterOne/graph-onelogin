@@ -14,7 +14,7 @@ import { DATA_ACCOUNT_ENTITY } from './account';
 import {
   ACCOUNT_ENTITY_TYPE,
   ACCOUNT_APP_RELATIONSHIP_TYPE,
-  RoleEntity,
+  AppEntity,
   APP_ENTITY_CLASS,
   APP_ENTITY_TYPE,
 } from '../jupiterone';
@@ -40,7 +40,7 @@ export async function fetchApplications({
   await apiClient.iterateApplications(async (app) => {
     const applicationEntity = (await jobState.addEntity(
       createAppEntity(app),
-    )) as RoleEntity;
+    )) as AppEntity;
 
     await jobState.addRelationship(
       createDirectRelationship({

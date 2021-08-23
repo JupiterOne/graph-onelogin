@@ -9,6 +9,7 @@ export * from './PersonalDeviceEntity';
 export * from './UserGroupRelationship';
 export * from './UserRoleRelationship';
 export * from './UserAppRelationship';
+export * from './UserAwsIamRoleRelationship';
 export * from './UserPersonalAppRelationship';
 export * from './UserPersonalDeviceRelationship';
 export * from './AccountAppRelationship';
@@ -17,6 +18,7 @@ export * from './AccountGroupRelationship';
 export * from './AccountRoleRelationship';
 export * from './AccountServiceRelationship';
 export * from './AccountPersonalDeviceRelationship';
+export * from './AwsIamRole';
 
 export interface IdEntityMap<V> {
   [key: string]: V;

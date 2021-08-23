@@ -10,6 +10,7 @@ import {
   PersonalApp,
   PersonalDevice,
 } from './onelogin';
+import convertUserAttributeName from './utils/convertUserAttributeName';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -23,6 +24,7 @@ export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
  */
 export class APIClient {
   provider: OneLoginClient;
+  logger: IntegrationLogger;
   //retrieves a token automatically and applies it to subsequent requests
   constructor(readonly config: IntegrationConfig, logger: IntegrationLogger) {
     this.provider = new OneLoginClient(
@@ -31,6 +33,7 @@ export class APIClient {
       logger,
       config.apiHostname,
     );
+    this.logger = logger;
   }
 
   public async verifyAuthentication(): Promise<void> {
@@ -89,6 +92,24 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
+      //check for special parameter to map user attributes to AWS IAM roles
+      try {
+        const indivApp = await this.provider.fetchOneApp(application.id);
+        if (
+          indivApp.parameters &&
+          indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
+        ) {
+          application.awsRolesUserAttribute = convertUserAttributeName(
+            indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
+              .user_attribute_mappings,
+          );
+        }
+      } catch (err) {
+        //if this bombs, don't cancel the step over it
+        this.logger.info(
+          `Application ${application.name} failed to load IAM role info`,
+        );
+      }
       await iteratee(application);
     }
   }

@@ -95,6 +95,7 @@ export interface App {
   extension: boolean;
   visible: boolean;
   provisioning: boolean;
+  awsRolesUserAttribute?: string; //not from API; we'll set this
 }
 
 export interface PersonalApp {
@@ -105,6 +106,41 @@ export interface PersonalApp {
   extension: boolean;
   login_id: number;
   personal: boolean;
+}
+
+export interface ExtendedApp {
+  id: string;
+  name: string;
+  visible: boolean;
+  description: string;
+  notes: string;
+  icon_url: string;
+  auth_method: number;
+  policy_id: null;
+  allow_assumed_signin: false;
+  tab_id: number;
+  connector_id: number;
+  created_at: string;
+  updated_at: string;
+  role_ids: number[];
+  provisioning: object;
+  sso: object;
+  configuration: object;
+  parameters: AppParameters;
+  enforcement_point: object;
+}
+
+export interface AppParameters {
+  'https://aws.amazon.com/SAML/Attributes/Role'?: ParameterProperties;
+  'https://aws.amazon.com/SAML/Attributes/RoleSession'?: ParameterProperties;
+  saml_username?: ParameterProperties;
+}
+
+export interface ParameterProperties {
+  user_attribute_mappings?: string;
+  label?: string;
+  user_attribute_macros?: string;
+  include_in_saml_assertion?: string;
 }
 
 export interface PersonalDevice {
@@ -119,6 +155,15 @@ export interface PersonalDevice {
 
 interface AccessTokenResponse extends OneloginResponse {
   data: AccessToken[];
+}
+
+interface AccessTokenResponseV2 extends OneloginResponse {
+  access_token: string;
+  created_at: string;
+  expires_in: number;
+  refresh_token: string;
+  token_type: string;
+  account_id: number;
 }
 
 interface UserResponse extends OneloginResponse {
@@ -167,16 +212,16 @@ export default class OneLoginClient {
 
   public async authenticate() {
     const result = (await this.makeRequest(
-      '/auth/oauth2/token',
+      '/auth/oauth2/v2/token',
       Method.POST,
       { grant_type: 'client_credentials' },
       {
         Authorization: `client_id:${this.clientId}, client_secret:${this.clientSecret}`,
       },
-    )) as AccessTokenResponse;
+    )) as AccessTokenResponseV2;
 
-    if (result?.data?.[0]?.access_token) {
-      this.accessToken = result.data[0].access_token;
+    if (result.access_token) {
+      this.accessToken = result.access_token;
       return;
     }
 
@@ -196,7 +241,7 @@ export default class OneLoginClient {
         `/api/1/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
 
       if (result.data) {
@@ -224,7 +269,7 @@ export default class OneLoginClient {
         `/api/1/groups?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as GroupResponse;
 
       if (result.data) {
@@ -252,7 +297,7 @@ export default class OneLoginClient {
         `/api/1/roles?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as RoleResponse;
 
       if (result.data) {
@@ -280,7 +325,7 @@ export default class OneLoginClient {
         `/api/1/apps?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer:${this.accessToken}` },
+        { Authorization: `bearer ${this.accessToken}` },
       )) as AppResponse;
 
       if (result.data) {
@@ -299,12 +344,25 @@ export default class OneLoginClient {
     return apps;
   }
 
+  //note that this is a v2 API call, which does not use the result.data structure
+  //results are returned directly. Since this is just one app, v2 API pagination is not required
+  public async fetchOneApp(appid): Promise<ExtendedApp> {
+    const result = (await this.makeRequest(
+      `/api/2/apps/${appid}`,
+      Method.GET,
+      {},
+      { Authorization: `bearer ${this.accessToken}` },
+    )) as any;
+
+    return result;
+  }
+
   public async fetchUserApps(userId: number): Promise<PersonalApp[]> {
     const result = (await this.makeRequest(
       `/api/1/users/${userId}/apps`,
       Method.GET,
       {},
-      { Authorization: `bearer:${this.accessToken}` },
+      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalAppResponse;
 
     const apps: PersonalApp[] = result.data;
@@ -325,7 +383,7 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/otp_devices`,
       Method.GET,
       {},
-      { Authorization: `bearer:${this.accessToken}` },
+      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalDeviceResponse;
 
     const devices: PersonalDevice[] = result.data.otp_devices;
@@ -348,6 +406,7 @@ export default class OneLoginClient {
     headers: {},
   ): Promise<
     | AccessTokenResponse
+    | AccessTokenResponseV2
     | GroupResponse
     | UserResponse
     | RoleResponse
@@ -356,7 +415,7 @@ export default class OneLoginClient {
     let options: RequestInit = {
       method,
       headers: {
-        'Content-type': 'application/json',
+        'Content-Type': 'application/json',
         ...headers,
       },
     };
@@ -366,16 +425,16 @@ export default class OneLoginClient {
     }
 
     const response = await fetch(this.host + url, options);
-
-    if (response.status === 200) {
-      return response.json();
+    const result = await response.json();
+    //if a bad call is made, an object is returned with a statusCode field set to a non-200 value
+    if (result.statusCode && !(result.statusCode === 200)) {
+      throw new IntegrationProviderAPIError({
+        cause: result,
+        endpoint: this.host + url,
+        status: result.statusCode,
+        statusText: result.message,
+      });
     }
-
-    throw new IntegrationProviderAPIError({
-      cause: undefined,
-      status: response.status.toString(),
-      statusText: response.statusText,
-      endpoint: this.host + url,
-    });
+    return result;
   }
 }

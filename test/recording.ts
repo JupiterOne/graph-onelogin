@@ -23,16 +23,12 @@ export function setupOneloginRecording(
 function getRedactedOAuthResponse() {
   //OneLogin responses have a certain structure that the client expects
   return {
-    data: [
-      {
-        access_token: '[REDACTED]',
-        created_at: Date.now(),
-        expires_in: 9999,
-        refresh_token: '[REDACTED]',
-        token_type: 'Bearer',
-        account_id: 999999,
-      },
-    ],
+    access_token: '[REDACTED]',
+    created_at: Date.now(),
+    expires_in: 9999,
+    refresh_token: '[REDACTED]',
+    token_type: 'Bearer',
+    account_id: 999999,
   };
 }
 
@@ -50,7 +46,7 @@ function redact(entry): void {
 
   //we can just get rid of all response content if this was an Oauth token call
   const requestUrl = entry.request.url;
-  if (requestUrl.match(/api.us.onelogin.com\/auth\/oauth2\/token/)) {
+  if (requestUrl.match(/onelogin.com\/auth\/oauth2\//)) {
     entry.response.content.text = JSON.stringify(getRedactedOAuthResponse());
     return;
   }
