@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.2] 2021-08-24
+
 ### Changed
 
 - Changed Role binding logs from trace to info so they can be viewed
