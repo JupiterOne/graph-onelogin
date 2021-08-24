@@ -8,11 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
 ## [2.2.1] 2021-08-23
 
 - Added log traces for Role binding
 
 ## [2.2.0] 2021-08-23
+
+### Added
 
 - Mapping Onelogin users to AWS roles, if an AWS application in OneLogin has the
   Role parameter defined to point to a user attribute and the AWS Role already
