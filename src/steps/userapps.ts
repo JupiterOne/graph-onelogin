@@ -75,7 +75,7 @@ export async function fetchUserApps({
           try {
             const userRolesValue: string = String(userEntity[userAttribute]);
             //temporary logger
-            logger.trace(`User has Roles ${userRolesValue}`);
+            logger.info(`User has Roles ${userRolesValue}`);
             const roles = userRolesValue.split(',');
             const awsRelationships = convertAWSRolesToRelationships(
               userEntity,
