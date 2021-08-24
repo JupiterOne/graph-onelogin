@@ -8,9 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-### Added
+### Changed
+
+- Changed Role binding logs from trace to info so they can be viewed
 
 ## [2.2.1] 2021-08-23
+
+### Added
 
 - Added log traces for Role binding
 

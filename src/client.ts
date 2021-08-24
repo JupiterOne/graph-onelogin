@@ -96,7 +96,7 @@ export class APIClient {
       try {
         const indivApp = await this.provider.fetchOneApp(application.id);
         //temporary logger
-        this.logger.trace(
+        this.logger.info(
           `Application ${application.name} has parameters ${JSON.stringify(
             indivApp.parameters,
           )}`,
@@ -106,10 +106,10 @@ export class APIClient {
           indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
         ) {
           //temporary loggers
-          this.logger.trace(
+          this.logger.info(
             `Application ${application.name}: Role param detected`,
           );
-          this.logger.trace(
+          this.logger.info(
             `Raw role param is ${indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role'].user_attribute_mappings}`,
           );
           application.awsRolesUserAttribute = convertUserAttributeName(
@@ -117,7 +117,7 @@ export class APIClient {
               .user_attribute_mappings,
           );
           //temporary logger
-          this.logger.trace(
+          this.logger.info(
             `J1 style processed param is ${application.awsRolesUserAttribute}`,
           );
         }
