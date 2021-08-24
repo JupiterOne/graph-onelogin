@@ -95,13 +95,30 @@ export class APIClient {
       //check for special parameter to map user attributes to AWS IAM roles
       try {
         const indivApp = await this.provider.fetchOneApp(application.id);
+        //temporary logger
+        this.logger.trace(
+          `Application ${application.name} has parameters ${JSON.stringify(
+            indivApp.parameters,
+          )}`,
+        );
         if (
           indivApp.parameters &&
           indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
         ) {
+          //temporary loggers
+          this.logger.trace(
+            `Application ${application.name}: Role param detected`,
+          );
+          this.logger.trace(
+            `Raw role param is ${indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role'].user_attribute_mappings}`,
+          );
           application.awsRolesUserAttribute = convertUserAttributeName(
             indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
               .user_attribute_mappings,
+          );
+          //temporary logger
+          this.logger.trace(
+            `J1 style processed param is ${application.awsRolesUserAttribute}`,
           );
         }
       } catch (err) {
