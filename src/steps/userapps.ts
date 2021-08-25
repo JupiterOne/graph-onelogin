@@ -74,17 +74,19 @@ export async function fetchUserApps({
           const userAttribute: string = appEntity.awsRolesUserAttribute!;
           try {
             const userRolesValue: string = String(userEntity[userAttribute]);
-            //temporary logger
-            logger.info(`User has Roles ${userRolesValue}`);
-            const roles = userRolesValue.split(',');
-            const awsRelationships = convertAWSRolesToRelationships(
-              userEntity,
-              roles,
-              USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
-            );
-            for (const rel of awsRelationships) {
-              if (!jobState.hasKey(rel._key)) {
-                await jobState.addRelationship(rel);
+            if (userRolesValue) {
+              //temporary logger
+              logger.trace(`User has Roles ${userRolesValue}`);
+              const roles = userRolesValue.split(',');
+              const awsRelationships = convertAWSRolesToRelationships(
+                userEntity,
+                roles,
+                USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+              );
+              for (const rel of awsRelationships) {
+                if (!jobState.hasKey(rel._key)) {
+                  await jobState.addRelationship(rel);
+                }
               }
             }
           } catch (err) {
