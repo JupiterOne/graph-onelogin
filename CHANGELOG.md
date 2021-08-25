@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Changed Role binding logs to be more targeted to AWS role
+
 ## [2.2.2] 2021-08-24
 
 ### Changed

@@ -104,7 +104,7 @@ export class APIClient {
             `Application ${application.name}: Role param detected`,
           );
           //temporary logger
-          this.logger.trace(
+          this.logger.info(
             `Application ${application.name} has parameters ${JSON.stringify(
               indivApp.parameters,
             )}`,
@@ -115,7 +115,7 @@ export class APIClient {
           );
           if (application.awsRolesUserAttribute === 'none') {
             //temporary logger
-            this.logger.trace(
+            this.logger.info(
               `Role user_attribute_mappings set to none, falling back to attribute_transformations`,
             );
             application.awsRolesUserAttribute = convertUserAttributeName(
