@@ -141,6 +141,12 @@ export interface ParameterProperties {
   label?: string;
   user_attribute_macros?: string;
   include_in_saml_assertion?: string;
+  skip_if_blank?: boolean;
+  provisioned_entitlements?: boolean;
+  attributes_transformations?: string;
+  id?: number;
+  value?: any;
+  default_values?: any;
 }
 
 export interface PersonalDevice {
