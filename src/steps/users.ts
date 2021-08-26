@@ -9,7 +9,10 @@ import {
 
 import { createAPIClient } from '../client';
 import { IntegrationConfig } from '../config';
-import { createUserEntity } from '../converters';
+import {
+  createUserEntity,
+  convertAWSRolesToRelationships,
+} from '../converters';
 import { DATA_ACCOUNT_ENTITY } from './account';
 import {
   ACCOUNT_ENTITY_TYPE,
@@ -19,6 +22,8 @@ import {
   GROUP_USER_RELATIONSHIP_TYPE,
   USER_GROUP_RELATIONSHIP_TYPE,
   USER_ROLE_RELATIONSHIP_TYPE,
+  USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+  AWS_IAM_ROLE_ENTITY_TYPE,
   UserEntity,
   USER_ENTITY_CLASS,
   USER_ENTITY_TYPE,
@@ -26,6 +31,7 @@ import {
   GroupEntity,
   RoleEntity,
 } from '../jupiterone';
+import findArns from '../utils/findArns';
 
 export async function fetchUsers({
   instance,
@@ -64,6 +70,9 @@ export async function fetchUsers({
       `Expected to find roleByIdMap in jobState.`,
     );
   }
+
+  //temporary code to ensure feature is working
+  let numberOfAwsIamRels = 0;
 
   await apiClient.iterateUsers(async (user) => {
     const userEntity = (await jobState.addEntity(
@@ -114,9 +123,34 @@ export async function fetchUsers({
         }
       }
     }
+
+    try {
+      //just in case this code goes awry, don't bomb the step
+      const awsArns: string[] = findArns(user);
+      if (awsArns) {
+        const awsRelationships = convertAWSRolesToRelationships(
+          userEntity,
+          awsArns,
+          USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+        );
+        for (const rel of awsRelationships) {
+          if (!jobState.hasKey(rel._key)) {
+            await jobState.addRelationship(rel);
+            numberOfAwsIamRels = numberOfAwsIamRels + 1;
+          }
+        }
+      }
+    } catch (err) {
+      logger.info(
+        `Had an error while trying to process AWS IAM mapped relationships: ${JSON.stringify(
+          err,
+        )}`,
+      );
+    }
   });
 
   await jobState.setData('USER_ARRAY', userEntities);
+  logger.info(`Found ${numberOfAwsIamRels} AWS IAM mapped relationships`);
 }
 
 export const userSteps: IntegrationStep<IntegrationConfig>[] = [
@@ -154,6 +188,12 @@ export const userSteps: IntegrationStep<IntegrationConfig>[] = [
         _class: RelationshipClass.ASSIGNED,
         sourceType: USER_ENTITY_TYPE,
         targetType: ROLE_ENTITY_TYPE,
+      },
+      {
+        _type: USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+        _class: RelationshipClass.ASSIGNED,
+        sourceType: USER_ENTITY_TYPE,
+        targetType: AWS_IAM_ROLE_ENTITY_TYPE,
       },
     ],
     dependsOn: ['fetch-groups', 'fetch-roles'],

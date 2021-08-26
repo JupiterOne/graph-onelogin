@@ -10,7 +10,6 @@ import {
   PersonalApp,
   PersonalDevice,
 } from './onelogin';
-import convertUserAttributeName from './utils/convertUserAttributeName';
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
@@ -92,48 +91,6 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
-      //check for special parameter to map user attributes to AWS IAM roles
-      try {
-        const indivApp = await this.provider.fetchOneApp(application.id);
-        if (
-          indivApp.parameters &&
-          indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
-        ) {
-          //temporary loggers
-          this.logger.info(
-            `Application ${application.name}: Role param detected`,
-          );
-          //temporary logger
-          this.logger.info(
-            `Application ${application.name} has parameters ${JSON.stringify(
-              indivApp.parameters,
-            )}`,
-          );
-          application.awsRolesUserAttribute = convertUserAttributeName(
-            indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
-              .user_attribute_mappings,
-          );
-          if (application.awsRolesUserAttribute === 'none') {
-            //temporary logger
-            this.logger.info(
-              `Role user_attribute_mappings set to none, falling back to attribute_transformations`,
-            );
-            application.awsRolesUserAttribute = convertUserAttributeName(
-              indivApp.parameters['https://aws.amazon.com/SAML/Attributes/Role']
-                .attributes_transformations,
-            );
-          }
-          //temporary logger
-          this.logger.info(
-            `J1 style processed param is ${application.awsRolesUserAttribute}`,
-          );
-        }
-      } catch (err) {
-        //if this bombs, don't cancel the step over it
-        this.logger.info(
-          `Application ${application.name} failed to load IAM role info`,
-        );
-      }
       await iteratee(application);
     }
   }

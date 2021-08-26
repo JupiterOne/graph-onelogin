@@ -95,7 +95,6 @@ export interface App {
   extension: boolean;
   visible: boolean;
   provisioning: boolean;
-  awsRolesUserAttribute?: string; //not from API; we'll set this
 }
 
 export interface PersonalApp {
@@ -106,47 +105,6 @@ export interface PersonalApp {
   extension: boolean;
   login_id: number;
   personal: boolean;
-}
-
-export interface ExtendedApp {
-  id: string;
-  name: string;
-  visible: boolean;
-  description: string;
-  notes: string;
-  icon_url: string;
-  auth_method: number;
-  policy_id: null;
-  allow_assumed_signin: false;
-  tab_id: number;
-  connector_id: number;
-  created_at: string;
-  updated_at: string;
-  role_ids: number[];
-  provisioning: object;
-  sso: object;
-  configuration: object;
-  parameters: AppParameters;
-  enforcement_point: object;
-}
-
-export interface AppParameters {
-  'https://aws.amazon.com/SAML/Attributes/Role'?: ParameterProperties;
-  'https://aws.amazon.com/SAML/Attributes/RoleSession'?: ParameterProperties;
-  saml_username?: ParameterProperties;
-}
-
-export interface ParameterProperties {
-  user_attribute_mappings?: string;
-  label?: string;
-  user_attribute_macros?: string;
-  include_in_saml_assertion?: string;
-  skip_if_blank?: boolean;
-  provisioned_entitlements?: boolean;
-  attributes_transformations?: string;
-  id?: number;
-  value?: any;
-  default_values?: any;
 }
 
 export interface PersonalDevice {
@@ -348,19 +306,6 @@ export default class OneLoginClient {
     } while (afterCursor);
 
     return apps;
-  }
-
-  //note that this is a v2 API call, which does not use the result.data structure
-  //results are returned directly. Since this is just one app, v2 API pagination is not required
-  public async fetchOneApp(appid): Promise<ExtendedApp> {
-    const result = (await this.makeRequest(
-      `/api/2/apps/${appid}`,
-      Method.GET,
-      {},
-      { Authorization: `bearer ${this.accessToken}` },
-    )) as any;
-
-    return result;
   }
 
   public async fetchUserApps(userId: number): Promise<PersonalApp[]> {

@@ -88,11 +88,8 @@ curl --request POST \
 
 ## Notes on mapping to AWS IAM roles
 
-The integration assumes that your OneLogin account has configured parameters on
-an AWS application (at the application level) to specify the user attribute that
-contains that user's AWS IAM Roles. If an individual user has manually-assigned
-override values specified for their AWS application parameters, the integration
-will not be aware of it.
+The integration assumes that your OneLogin users have their AWS IAM Role ARNs
+specified in some user attribute returned by the OneLogin API.
 
 [1]:
   https://developers.onelogin.com/api-docs/1/getting-started/working-with-api-credentials
