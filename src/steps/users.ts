@@ -124,19 +124,28 @@ export async function fetchUsers({
       }
     }
 
-    const awsArns: string[] = findArns(user);
-    if (awsArns) {
-      const awsRelationships = convertAWSRolesToRelationships(
-        userEntity,
-        awsArns,
-        USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
-      );
-      for (const rel of awsRelationships) {
-        if (!jobState.hasKey(rel._key)) {
-          await jobState.addRelationship(rel);
-          numberOfAwsIamRels = numberOfAwsIamRels + 1;
+    try {
+      //just in case this code goes awry, don't bomb the step
+      const awsArns: string[] = findArns(user);
+      if (awsArns) {
+        const awsRelationships = convertAWSRolesToRelationships(
+          userEntity,
+          awsArns,
+          USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+        );
+        for (const rel of awsRelationships) {
+          if (!jobState.hasKey(rel._key)) {
+            await jobState.addRelationship(rel);
+            numberOfAwsIamRels = numberOfAwsIamRels + 1;
+          }
         }
       }
+    } catch (err) {
+      logger.info(
+        `Had an error while trying to process AWS IAM mapped relationships: ${JSON.stringify(
+          err,
+        )}`,
+      );
     }
   });
 
