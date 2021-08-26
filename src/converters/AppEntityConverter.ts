@@ -16,6 +16,5 @@ export function createAppEntity(app: App): AppEntity {
     extension: app.extension,
     visible: app.visible,
     provisioning: app.provisioning,
-    awsRolesUserAttribute: app.awsRolesUserAttribute,
   };
 }
