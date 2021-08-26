@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Changed AWS IAM role scannning to look for ARNs in any user property.
+
 ## [2.2.3] 2021-08-25
 
 ### Changed
