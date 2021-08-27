@@ -73,6 +73,7 @@ export async function fetchUsers({
 
   //temporary code to ensure feature is working
   let numberOfAwsIamRels = 0;
+  let numberOfArns = 0;
 
   await apiClient.iterateUsers(async (user) => {
     const userEntity = (await jobState.addEntity(
@@ -128,6 +129,7 @@ export async function fetchUsers({
       //just in case this code goes awry, don't bomb the step
       const awsArns: string[] = findArns(user);
       if (awsArns) {
+        numberOfArns = numberOfArns + awsArns.length;
         const awsRelationships = convertAWSRolesToRelationships(
           userEntity,
           awsArns,
@@ -142,15 +144,21 @@ export async function fetchUsers({
       }
     } catch (err) {
       logger.info(
-        `Had an error while trying to process AWS IAM mapped relationships: ${JSON.stringify(
-          err,
-        )}`,
+        { err, userId: user.id },
+        'Unable to build relationships between OneLogin user and AWS Roles',
       );
     }
   });
 
   await jobState.setData('USER_ARRAY', userEntities);
-  logger.info(`Found ${numberOfAwsIamRels} AWS IAM mapped relationships`);
+  logger.info(
+    {
+      userCount: userEntities.length,
+      arnCount: numberOfArns,
+      iamRoleRelationshipCount: numberOfAwsIamRels,
+    },
+    'Completed OneLogin user to AWS Role processing',
+  );
 }
 
 export const userSteps: IntegrationStep<IntegrationConfig>[] = [
