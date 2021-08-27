@@ -5,7 +5,7 @@ import {
 import { UserEntity, GroupEntity } from '../jupiterone';
 
 //example that matches: 'arn:aws:iam::123456789987:role/Great_Job123_For_Some-body'
-const ARN_REGEX = /^arn:aws:iam::[0-9]+:role\/([a-zA-Z0-9-_]+)/;
+const ARN_REGEX = /^arn:aws:iam::[0-9]+:role\/([a-zA-Z0-9-_]+)/i;
 
 export function convertAWSRolesToRelationships(
   oneLoginPrincipal: UserEntity | GroupEntity,
