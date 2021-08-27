@@ -1,6 +1,7 @@
 import {
   convertProperties,
   parseTimePropertyValue,
+  setRawData,
 } from '@jupiterone/integration-sdk-core';
 import {
   USER_ENTITY_CLASS,
@@ -26,7 +27,7 @@ export function createUserEntity(
       }
     }
   }
-  return {
+  const userEntity: UserEntity = {
     _key: generateKey(USER_ENTITY_TYPE, user.id),
     _type: USER_ENTITY_TYPE,
     _class: USER_ENTITY_CLASS,
@@ -70,4 +71,6 @@ export function createUserEntity(
       prefix: 'customAttributes', //used to be custom_attributes
     }),
   };
+  setRawData(userEntity, { name: 'default', rawData: user });
+  return userEntity;
 }

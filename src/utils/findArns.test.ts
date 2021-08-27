@@ -136,3 +136,49 @@ test('should return ARNs in custom attributes', () => {
   ];
   expect(findArns(userWithCustomAttributeArns)).toMatchObject(arnArray);
 });
+
+test('should find ARNs regardless of case', () => {
+  const userWithArns = {
+    activated_at: '2021-06-16T18:00:37.300Z',
+    created_at: '2021-06-16T18:00:37.485Z',
+    email: 'thomaskevincasey74@gmail.com',
+    username: '',
+    firstname: 'Kevin',
+    group_id: 477661,
+    id: 137729105,
+    invalid_login_attempts: 0,
+    invitation_sent_at: '2021-06-16T18:00:52.170Z',
+    last_login: '2021-08-25T01:56:17.518Z',
+    lastname: 'Casey',
+    locked_until: null,
+    comment: '',
+    openid_name: 'thomaskevincasey74',
+    locale_code: null,
+    preferred_locale_code: null,
+    password_changed_at: '2021-07-27T16:38:34.419Z',
+    phone: '',
+    status: 1,
+    updated_at: '2021-08-25T01:56:17.821Z',
+    distinguished_name: null,
+    external_id: null,
+    directory_id: null,
+    member_of: null,
+    samaccountname: null,
+    userprincipalname: null,
+    manager_ad_id: null,
+    manager_user_id: null,
+    role_id: [439869, 439870],
+    company: '',
+    department: '',
+    title: '',
+    state: 1,
+    trusted_idp_id: null,
+    amazon_roles:
+      'aRn:AWS:iaM::123456789987:role/Ninja; arn:aws:iam::123456789987:ROLE/developer',
+  };
+  const arnArray: string[] = [
+    'aRn:AWS:iaM::123456789987:role/Ninja',
+    'arn:aws:iam::123456789987:ROLE/developer',
+  ];
+  expect(findArns(userWithArns)).toMatchObject(arnArray);
+});
