@@ -8,10 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.5] 2021-08-27
+
 ### Changed
 
 - Changed logs to note any ARNs found, not just successful relationships
   created.
+- Updated regex to look for ARN case insensitive
 
 ## [2.2.4] 2021-08-26
 
