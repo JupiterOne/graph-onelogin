@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Changed logs to note any ARNs found, not just successful relationships
+  created.
+
 ## [2.2.4] 2021-08-26
 
 ### Changed
