@@ -6,11 +6,12 @@ import {
 import { PersonalDevice } from '../onelogin/OneLoginClient';
 
 import generateKey from '../utils/generateKey';
+import { setRawData } from '@jupiterone/integration-sdk-core';
 
 export function createPersonalDeviceEntity(
   device: PersonalDevice,
 ): PersonalDeviceEntity {
-  return {
+  const personalDeviceEntity: PersonalDeviceEntity = {
     _class: PERSONAL_DEVICE_ENTITY_CLASS,
     _key: generateKey(PERSONAL_DEVICE_ENTITY_TYPE, device.id),
     _type: PERSONAL_DEVICE_ENTITY_TYPE,
@@ -23,4 +24,6 @@ export function createPersonalDeviceEntity(
     userDisplayName: device.user_display_name,
     needsTrigger: device.needs_trigger,
   };
+  setRawData(personalDeviceEntity, { name: 'default', rawData: device });
+  return personalDeviceEntity;
 }

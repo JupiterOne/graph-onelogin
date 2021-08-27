@@ -30,17 +30,16 @@ export function convertAWSRolesToRelationships(
 }
 
 /**
- * When an Onelogin application represents access to an AWS Account (the application
- * has a parameter of `parameters['https://aws.amazon.com/SAML/Attributes/Role'`),
- * the application parameter may have defined a property `awsRolesUserAttribute` that
- * contains a string of the user property, which itself has a semi-colon delimited string
- * of the Roles in AWS for this user. The roles are parsed to create mapped
- * relationships to the AWS IAM roles. The relationship is not created unless
- * the role is already in the graph.
+ * Given a source entity key (probably a User) and an AWN IAM Role ARN,
+ * we can create a mapped relationship to that AWS IAM role. Mapped
+ * relationships attempt to find the target entity in the J1 graph,
+ * presumably from another integration having already created that entity.
+ * Since we set skipTargetCreation to true here, the AWS IAM role entity
+ * will not be created if it does not already exist in the graph.
  *
  * @param sourceKey the `_key` of the user which has access to the
  * `awsAccountId`
- * @param role the AWS IAM role identifier provided by Onelogin
+ * @param role the AWS IAM role identifier (ARN) provided by Onelogin
  * @param awsAccountId the application `awsAccountId`
  */
 function mapAWSRoleAssignment({
