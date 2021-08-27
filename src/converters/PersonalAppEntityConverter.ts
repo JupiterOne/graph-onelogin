@@ -1,3 +1,4 @@
+import { setRawData } from '@jupiterone/integration-sdk-core';
 import {
   PERSONAL_APP_ENTITY_CLASS,
   PERSONAL_APP_ENTITY_TYPE,
@@ -9,7 +10,7 @@ import { PersonalApp } from '../onelogin/OneLoginClient';
 import generateKey from '../utils/generateKey';
 
 export function createPersonalAppEntity(app: PersonalApp): PersonalAppEntity {
-  return {
+  const personalAppEntity: PersonalAppEntity = {
     _class: PERSONAL_APP_ENTITY_CLASS,
     _key: generateKey(PERSONAL_APP_ENTITY_TYPE, app.id),
     _type: PERSONAL_APP_ENTITY_TYPE,
@@ -22,4 +23,6 @@ export function createPersonalAppEntity(app: PersonalApp): PersonalAppEntity {
     loginId: app.login_id,
     personal: app.personal,
   };
+  setRawData(personalAppEntity, { name: 'default', rawData: app });
+  return personalAppEntity;
 }

@@ -44,6 +44,16 @@ Object {
         "UserGroup",
       ],
       "_key": "onelogin_group_477661",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "id": 477661,
+            "name": "Getting the Band Together",
+            "reference": null,
+          },
+        },
+      ],
       "_type": "onelogin_group",
       "displayName": "Getting the Band Together",
       "id": "477661",
@@ -55,6 +65,15 @@ Object {
         "AccessRole",
       ],
       "_key": "onelogin_role_428308",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "id": 428308,
+            "name": "Default",
+          },
+        },
+      ],
       "_type": "onelogin_role",
       "displayName": "Default",
       "id": "428308",
@@ -65,6 +84,15 @@ Object {
         "AccessRole",
       ],
       "_key": "onelogin_role_439868",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "id": 439868,
+            "name": "Rock Star",
+          },
+        },
+      ],
       "_type": "onelogin_role",
       "displayName": "Rock Star",
       "id": "439868",
@@ -75,6 +103,15 @@ Object {
         "AccessRole",
       ],
       "_key": "onelogin_role_439869",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "id": 439869,
+            "name": "Ninja",
+          },
+        },
+      ],
       "_type": "onelogin_role",
       "displayName": "Ninja",
       "id": "439869",
@@ -85,6 +122,15 @@ Object {
         "AccessRole",
       ],
       "_key": "onelogin_role_439870",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "id": 439870,
+            "name": "Cryptozoologist",
+          },
+        },
+      ],
       "_type": "onelogin_role",
       "displayName": "Cryptozoologist",
       "id": "439870",
@@ -367,6 +413,20 @@ Object {
         "Application",
       ],
       "_key": "onelogin_application_1475668",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "connector_id": 68269,
+            "extension": true,
+            "icon": "https://s3.amazonaws.com/onelogin-assets/images/icons/doordash.png",
+            "id": 1475668,
+            "name": "DoorDash",
+            "provisioning": false,
+            "visible": true,
+          },
+        },
+      ],
       "_type": "onelogin_application",
       "connectorId": 68269,
       "displayName": "DoorDash",
@@ -381,6 +441,20 @@ Object {
         "Application",
       ],
       "_key": "onelogin_application_1503223",
+      "_rawData": Array [
+        Object {
+          "name": "default",
+          "rawData": Object {
+            "connector_id": 30319,
+            "extension": false,
+            "icon": "https://s3.amazonaws.com/onelogin-assets/images/icons/amazonwebservices2.png",
+            "id": 1503223,
+            "name": "Amazon Web Services (AWS)",
+            "provisioning": false,
+            "visible": true,
+          },
+        },
+      ],
       "_type": "onelogin_application",
       "connectorId": 30319,
       "displayName": "Amazon Web Services (AWS)",

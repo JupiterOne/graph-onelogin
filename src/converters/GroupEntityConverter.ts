@@ -6,9 +6,10 @@ import {
 
 import { Group } from '../onelogin/OneLoginClient';
 import generateKey from '../utils/generateKey';
+import { setRawData } from '@jupiterone/integration-sdk-core';
 
 export function createGroupEntity(group: Group): GroupEntity {
-  return {
+  const groupEntity: GroupEntity = {
     _class: GROUP_ENTITY_CLASS,
     _key: generateKey(GROUP_ENTITY_TYPE, group.id),
     _type: GROUP_ENTITY_TYPE,
@@ -17,4 +18,6 @@ export function createGroupEntity(group: Group): GroupEntity {
     reference: group.reference,
     name: group.name,
   };
+  setRawData(groupEntity, { name: 'default', rawData: group });
+  return groupEntity;
 }
