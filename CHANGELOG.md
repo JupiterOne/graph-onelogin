@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.5] 2021-08-27
+
 ### Added
 
 - Added raw data to entities to enhance troubleshooting
