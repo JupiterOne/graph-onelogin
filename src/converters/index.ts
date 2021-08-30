@@ -1,5 +1,5 @@
 export { createAccountEntity } from './AccountEntityConverter';
-export { createAppEntity } from './AppEntityConverter';
+export { createAppEntity, createAppRuleEntity } from './AppEntityConverter';
 export { createPersonalAppEntity } from './PersonalAppEntityConverter';
 export { createUserEntity } from './UserEntityConverter';
 export { createGroupEntity } from './GroupEntityConverter';
