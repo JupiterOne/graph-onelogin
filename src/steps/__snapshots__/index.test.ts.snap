@@ -982,56 +982,6 @@ Object {
       "_type": "onelogin_user_assigned_application",
       "displayName": "ASSIGNED",
     },
-    Object {
-      "_class": "ASSIGNED",
-      "_key": "143505928|assigned|arn:aws:iam::087679860675:role/OneLogin_EC2_ReadOnly",
-      "_mapping": Object {
-        "relationshipDirection": "REVERSE",
-        "skipTargetCreation": true,
-        "sourceEntityKey": "143505928",
-        "targetEntity": Object {
-          "_class": "AccessRole",
-          "_key": "arn:aws:iam::087679860675:role/OneLogin_EC2_ReadOnly",
-          "_type": "aws_iam_role",
-          "displayName": "OneLogin_EC2_ReadOnly",
-          "name": "OneLogin_EC2_ReadOnly",
-          "roleName": "OneLogin_EC2_ReadOnly",
-        },
-        "targetFilterKeys": Array [
-          Array [
-            "_type",
-            "_key",
-          ],
-        ],
-      },
-      "_type": "onelogin_user_assigned_aws_iam_role",
-      "displayName": "ASSIGNED",
-    },
-    Object {
-      "_class": "ASSIGNED",
-      "_key": "143505928|assigned|arn:aws:iam::087679860675:role/OneLogin_S3_ReadOnly",
-      "_mapping": Object {
-        "relationshipDirection": "REVERSE",
-        "skipTargetCreation": true,
-        "sourceEntityKey": "143505928",
-        "targetEntity": Object {
-          "_class": "AccessRole",
-          "_key": "arn:aws:iam::087679860675:role/OneLogin_S3_ReadOnly",
-          "_type": "aws_iam_role",
-          "displayName": "OneLogin_S3_ReadOnly",
-          "name": "OneLogin_S3_ReadOnly",
-          "roleName": "OneLogin_S3_ReadOnly",
-        },
-        "targetFilterKeys": Array [
-          Array [
-            "_type",
-            "_key",
-          ],
-        ],
-      },
-      "_type": "onelogin_user_assigned_aws_iam_role",
-      "displayName": "ASSIGNED",
-    },
   ],
   "encounteredTypes": Array [
     "onelogin_account",
@@ -1051,9 +1001,8 @@ Object {
     "onelogin_application_rule",
     "onelogin_application_has_rule",
     "onelogin_user_assigned_application",
-    "onelogin_user_assigned_aws_iam_role",
   ],
   "numCollectedEntities": 17,
-  "numCollectedRelationships": 31,
+  "numCollectedRelationships": 29,
 }
 `;
