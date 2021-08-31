@@ -101,7 +101,7 @@ export interface App {
 export interface AppRule {
   id: string;
   name: string;
-  match: string;
+  match: string; // "any" or "all" - whether all conditions or any conditions must apply
   enabled: boolean;
   position: number;
   conditions: AppRuleCondition[];
