@@ -54,6 +54,29 @@ function redact(entry): void {
   //if it wasn't a token call, parse the response text, removing any carriage returns or newlines
   const responseText = entry.response.content.text;
   const parsedResponseText = JSON.parse(responseText.replace(/\r?\n|\r/g, ''));
+  if (parsedResponseText.data) {
+    try {
+      const collectItems: any = [];
+      for (const item of parsedResponseText.data) {
+        if (item.email) {
+          item.email = 'exampleperson@jupiterone.com';
+        }
+        if (item.firstname) {
+          item.firstname = 'Example';
+        }
+        if (item.lastname) {
+          item.lastname = 'Person';
+        }
+        if (item.openid_name) {
+          item.openid_name = 'example.person';
+        }
+        collectItems.push(item);
+      }
+      parsedResponseText.data = collectItems;
+    } catch (err) {
+      //don't worry about it. just means this wasn't an array
+    }
+  }
 
   entry.response.content.text = JSON.stringify(parsedResponseText);
 }

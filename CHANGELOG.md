@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Application Rules are now Configuration entities in the graph
+
+### Changed
+
+- AWS IAM Role ARNs are now expected via Application Rules instead of user
+  attributes
+
 ## [2.2.6] 2021-08-27
 
 ### Added
