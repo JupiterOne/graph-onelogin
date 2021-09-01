@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.7] 2021-09-01
+
 ### Added
 
 - Application Rules are now Configuration entities in the graph
