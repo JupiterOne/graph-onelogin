@@ -115,6 +115,7 @@ The following entities are created:
 | ----------------------------- | ------------------------------- | -------------------- |
 | Onelogin Account              | `onelogin_account`              | `Account`            |
 | Onelogin Application          | `onelogin_application`          | `Application`        |
+| Onelogin Application Rule     | `onelogin_application_rule`     | `Configuration`      |
 | Onelogin Group                | `onelogin_group`                | `UserGroup`          |
 | Onelogin Personal Application | `onelogin_personal_application` | `Application`        |
 | Onelogin Personal Device      | `mfa_device`                    | `Key`, `AccessKey`   |
@@ -126,20 +127,21 @@ The following entities are created:
 
 The following relationships are created/mapped:
 
-| Source Entity `_type` | Relationship `_class` | Target Entity `_type`           |
-| --------------------- | --------------------- | ------------------------------- |
-| `onelogin_account`    | **HAS**               | `onelogin_application`          |
-| `onelogin_account`    | **HAS**               | `onelogin_group`                |
-| `onelogin_account`    | **HAS**               | `onelogin_role`                 |
-| `onelogin_account`    | **HAS**               | `onelogin_service`              |
-| `onelogin_account`    | **HAS**               | `onelogin_user`                 |
-| `onelogin_group`      | **HAS**               | `onelogin_user`                 |
-| `onelogin_user`       | **ASSIGNED**          | `onelogin_application`          |
-| `onelogin_user`       | **ASSIGNED**          | `aws_iam_role`                  |
-| `onelogin_user`       | **ASSIGNED**          | `onelogin_group`                |
-| `onelogin_user`       | **ASSIGNED**          | `mfa_device`                    |
-| `onelogin_user`       | **ASSIGNED**          | `onelogin_role`                 |
-| `onelogin_user`       | **HAS**               | `onelogin_personal_application` |
+| Source Entity `_type`  | Relationship `_class` | Target Entity `_type`           |
+| ---------------------- | --------------------- | ------------------------------- |
+| `onelogin_account`     | **HAS**               | `onelogin_application`          |
+| `onelogin_account`     | **HAS**               | `onelogin_group`                |
+| `onelogin_account`     | **HAS**               | `onelogin_role`                 |
+| `onelogin_account`     | **HAS**               | `onelogin_service`              |
+| `onelogin_account`     | **HAS**               | `onelogin_user`                 |
+| `onelogin_application` | **HAS**               | `onelogin_application_rule`     |
+| `onelogin_group`       | **HAS**               | `onelogin_user`                 |
+| `onelogin_user`        | **ASSIGNED**          | `onelogin_application`          |
+| `onelogin_user`        | **ASSIGNED**          | `aws_iam_role`                  |
+| `onelogin_user`        | **ASSIGNED**          | `onelogin_group`                |
+| `onelogin_user`        | **ASSIGNED**          | `mfa_device`                    |
+| `onelogin_user`        | **ASSIGNED**          | `onelogin_role`                 |
+| `onelogin_user`        | **HAS**               | `onelogin_personal_application` |
 
 <!--
 ********************************************************************************

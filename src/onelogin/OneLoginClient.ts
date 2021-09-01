@@ -5,7 +5,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import fetch, { RequestInit } from 'node-fetch';
 
-interface OneloginResponse {
+interface OneloginV1Response {
   status: {
     error: boolean;
     code: number;
@@ -95,6 +95,28 @@ export interface App {
   extension: boolean;
   visible: boolean;
   provisioning: boolean;
+  rules?: AppRule[];
+}
+
+export interface AppRule {
+  id: string;
+  name: string;
+  match: string; // "any" or "all" - whether all conditions or any conditions must apply
+  enabled: boolean;
+  position: number;
+  conditions: AppRuleCondition[];
+  actions: AppRuleAction[];
+}
+
+export interface AppRuleCondition {
+  source?: string;
+  operator?: string;
+  value?: string;
+}
+
+export interface AppRuleAction {
+  action?: string;
+  value?: string[] | string;
 }
 
 export interface PersonalApp {
@@ -117,11 +139,11 @@ export interface PersonalDevice {
   user_display_name: string;
 }
 
-interface AccessTokenResponse extends OneloginResponse {
+interface AccessTokenResponse extends OneloginV1Response {
   data: AccessToken[];
 }
 
-interface AccessTokenResponseV2 extends OneloginResponse {
+interface AccessTokenResponseV2 extends OneloginV1Response {
   access_token: string;
   created_at: string;
   expires_in: number;
@@ -130,27 +152,27 @@ interface AccessTokenResponseV2 extends OneloginResponse {
   account_id: number;
 }
 
-interface UserResponse extends OneloginResponse {
+interface UserResponse extends OneloginV1Response {
   data: User[];
 }
 
-interface GroupResponse extends OneloginResponse {
+interface GroupResponse extends OneloginV1Response {
   data: Group[];
 }
 
-interface RoleResponse extends OneloginResponse {
+interface RoleResponse extends OneloginV1Response {
   data: Role[];
 }
 
-interface AppResponse extends OneloginResponse {
+interface AppResponse extends OneloginV1Response {
   data: App[];
 }
 
-interface PersonalAppResponse extends OneloginResponse {
+interface PersonalAppResponse extends OneloginV1Response {
   data: PersonalApp[];
 }
 
-interface PersonalDeviceResponse extends OneloginResponse {
+interface PersonalDeviceResponse extends OneloginV1Response {
   data: {
     otp_devices: PersonalDevice[];
   };
@@ -308,6 +330,16 @@ export default class OneLoginClient {
     return apps;
   }
 
+  public async fetchAppRules(appId): Promise<AppRule[]> {
+    const rules = (await this.makeRequest(
+      `/api/2/apps/${appId}/rules`,
+      Method.GET,
+      {},
+      { Authorization: `bearer ${this.accessToken}` },
+    )) as AppRule[];
+    return rules;
+  }
+
   public async fetchUserApps(userId: number): Promise<PersonalApp[]> {
     const result = (await this.makeRequest(
       `/api/1/users/${userId}/apps`,
@@ -362,6 +394,7 @@ export default class OneLoginClient {
     | UserResponse
     | RoleResponse
     | PersonalDeviceResponse
+    | AppRule[]
   > {
     let options: RequestInit = {
       method,

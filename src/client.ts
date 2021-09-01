@@ -91,6 +91,7 @@ export class APIClient {
     await this.provider.authenticate();
     const applications = await this.provider.fetchApps();
     for (const application of applications) {
+      application.rules = await this.provider.fetchAppRules(application.id);
       await iteratee(application);
     }
   }

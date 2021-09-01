@@ -18,6 +18,7 @@ export * from './AccountGroupRelationship';
 export * from './AccountRoleRelationship';
 export * from './AccountServiceRelationship';
 export * from './AccountPersonalDeviceRelationship';
+export * from './AppRuleRelationship';
 export * from './AwsIamRole';
 
 export interface IdEntityMap<V> {
