@@ -67,6 +67,7 @@ export function createUserEntity(
     state: user.state,
     trustedIdpId: user.trusted_idp_id,
     roles: roles,
+    roleIds: user.role_id,
     ...convertProperties(user.custom_attributes, {
       prefix: 'customAttributes', //used to be custom_attributes
     }),

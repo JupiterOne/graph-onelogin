@@ -98,8 +98,7 @@ export async function fetchUserApps({
                 );
                 for (const rel of awsRelationships) {
                   if (!jobState.hasKey(rel._key)) {
-                    //TODO: for now, don't actually add the rel until we've refined rule condition parsing
-                    //await jobState.addRelationship(rel);
+                    await jobState.addRelationship(rel);
                     numberOfAwsIamRels = numberOfAwsIamRels + 1;
                   }
                 }
