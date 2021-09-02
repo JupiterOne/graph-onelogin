@@ -88,8 +88,11 @@ curl --request POST \
 
 ## Notes on mapping to AWS IAM roles
 
-The integration assumes that your OneLogin users have their AWS IAM Role ARNs
-specified in some user attribute returned by the OneLogin API.
+The integration assumes that users who map to AWS IAM Roles do so via Role ARNs
+included in the SAML Role parameter. It is further assumed that these ARNs are
+mapped to the user by a Rule in the OneLogin AWS application. Currently, the
+integration supports mapping by Rule conditions based on OneLogin Roles, Group,
+or MemberOf properties.
 
 [1]:
   https://developers.onelogin.com/api-docs/1/getting-started/working-with-api-credentials

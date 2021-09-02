@@ -88,6 +88,7 @@ export async function fetchUserApps({
               const awsArns: string[] = findArns(
                 userEntity,
                 appRuleByIdMap[ruleId],
+                logger,
               );
               if (awsArns) {
                 const awsRelationships = convertAWSRolesToRelationships(
@@ -105,7 +106,7 @@ export async function fetchUserApps({
             } catch (err) {
               logger.info(
                 { err, userId: userEntity.id },
-                'Unable to build relationships between OneLogin user and AWS Roles',
+                'Error while building relationships between OneLogin user and AWS Roles',
               );
             }
           }

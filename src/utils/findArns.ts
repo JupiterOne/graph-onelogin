@@ -1,7 +1,12 @@
+import { IntegrationLogger } from '@jupiterone/integration-sdk-core';
 import { UserEntity } from '../jupiterone';
 import { AppRule, AppRuleAction, AppRuleCondition } from '../onelogin';
 
-export default function findArns(user: UserEntity, rule: AppRule): string[] {
+export default function findArns(
+  user: UserEntity,
+  rule: AppRule,
+  logger: IntegrationLogger,
+): string[] {
   /**
    * The goal is to find any AWS IAM Role ARNs assigned to this user
    * Return array of ARNs as strings if conditions apply and ARNs found
@@ -54,7 +59,7 @@ export default function findArns(user: UserEntity, rule: AppRule): string[] {
   if (rule.enabled) {
     if (rule.match === 'any') {
       for (const c of rule.conditions) {
-        if (checkConditionForUser(c, user)) {
+        if (checkConditionForUser(c, user, logger)) {
           return extractArns(rule.actions); //succeed fast
         }
       }
@@ -62,7 +67,7 @@ export default function findArns(user: UserEntity, rule: AppRule): string[] {
     } else {
       //default assume all conditions have to match
       for (const c of rule.conditions) {
-        if (!checkConditionForUser(c, user)) {
+        if (!checkConditionForUser(c, user, logger)) {
           return []; //fail fast
         }
       }
@@ -75,6 +80,7 @@ export default function findArns(user: UserEntity, rule: AppRule): string[] {
 function checkConditionForUser(
   cond: AppRuleCondition,
   user: UserEntity,
+  logger: IntegrationLogger,
 ): boolean {
   const condValue = cond.value || ''; //generally, the UI prevents condValue from being null or undefined, but just in case
   if (cond.source === 'member_of') {
@@ -97,6 +103,10 @@ function checkConditionForUser(
       case 'ew': // "ends with"
         return memberOf.endsWith(condValue);
       default:
+        logger.warn(
+          { cond },
+          `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
+        );
         return false;
     }
   }
@@ -113,6 +123,10 @@ function checkConditionForUser(
       case 'rin': // "roles include NOT"
         return !roleIds.includes(condValue);
       default:
+        logger.warn(
+          { cond },
+          `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
+        );
         return false;
     }
   }
@@ -127,10 +141,18 @@ function checkConditionForUser(
       case '!=':
         return user.groupId !== condValue;
       default:
+        logger.warn(
+          { cond },
+          `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
+        );
         return false;
     }
   }
-  return false; // if we don't recognize a supported condition source
+  logger.warn(
+    { cond },
+    `findArns.ts failed did not recognize application rule condition source "${cond.source}"`,
+  );
+  return false;
 }
 
 function extractArns(ruleActions: AppRuleAction[]): string[] {
