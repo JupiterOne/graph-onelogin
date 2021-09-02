@@ -11,7 +11,7 @@ export interface UserEntity extends Entity {
   email: string;
   username: string | null;
   firstname: string;
-  groupId: number;
+  groupId: string;
   invalidLoginAttempts: number | null;
   invitationSentAt: number | null;
   lastLogin: number | null;
@@ -38,4 +38,6 @@ export interface UserEntity extends Entity {
   title: string | null;
   state: number;
   trustedIdpId: number | null;
+  roles: string; //names of roles
+  roleIds: string; //id numbers of roles, comma-delimited
 }

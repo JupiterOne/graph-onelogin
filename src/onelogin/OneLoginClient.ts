@@ -65,7 +65,7 @@ export interface User {
   userprincipalname: string | null;
   manager_ad_id: number | null;
   manager_user_id: number | null;
-  role_id: number[]; //users can have multiple OneLogin roles
+  role_id: string[]; //users can have multiple OneLogin roles
   company: string | null;
   department: string | null;
   title: string | null;
