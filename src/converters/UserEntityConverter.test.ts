@@ -11,7 +11,7 @@ const baseUser: User = {
   openid_name: 'john-smith',
   status: 0,
   updated_at: new Date().toString(),
-  role_id: [1],
+  role_id: ['1'],
   state: 0,
   activated_at: null,
   username: null,

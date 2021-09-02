@@ -12,7 +12,7 @@ const testUser = {
   email: 'test.user@jupiterone.com',
   username: '',
   firstname: 'Test',
-  groupId: 0,
+  groupId: '0',
   invalidLoginAttempts: 0,
   invitationSentAt: 1628014471183,
   lastLogin: 1628014918006,
@@ -39,11 +39,12 @@ const testUser = {
   title: '',
   state: 1,
   trustedIdpId: null,
-  roles: '',
+  roles: 'BigShot',
+  roleIds: '459456',
   'customAttributes.customUserField': '',
 };
 
-test('should return empty array when no ARNs', () => {
+test('should return empty array when match but no ARNs', () => {
   const ruleWithNoArns = {
     id: '12345677',
     name: 'Test Rule',
@@ -59,7 +60,7 @@ test('should return empty array when no ARNs', () => {
     ],
     actions: [
       {
-        action: 'nothing',
+        action: 'set_role',
         value: [],
       },
     ],
@@ -84,7 +85,7 @@ test('should return ARNs', () => {
     ],
     actions: [
       {
-        action: 'nothing',
+        action: 'set_role',
         value: [
           'arn:aws:iam::087679860675:role/OneLogin_EC2_ReadOnly',
           'arn:aws:iam::087679860675:role/OneLogin_S3_ReadOnly',
