@@ -8,6 +8,9 @@ and this project adheres to
 
 ## [Unreleased]
 
+- Application Rules now respect conditions based on OneLogin Role, Group, or
+  MemberOf (Active Directory security group) properties
+
 ## [2.2.7] 2021-09-01
 
 ### Added

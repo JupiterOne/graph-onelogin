@@ -63,9 +63,8 @@ export async function fetchUserApps({
     );
   }
 
-  //temporary code to ensure feature is working
+  //counting IAM relationships created
   let numberOfAwsIamRels = 0;
-  let numberOfArns = 0;
 
   for (const userEntity of userEntities) {
     await apiClient.iterateUserApps(userEntity.id, async (userApp) => {
@@ -84,13 +83,14 @@ export async function fetchUserApps({
           const ruleIds = appEntity.ruleIds.split(',');
           for (const ruleId of ruleIds) {
             try {
-              //just in case this code goes awry, don't bomb the step
+              //this code contains potentially brittle parsers
+              //if they fail, don't fail the integration step
               const awsArns: string[] = findArns(
                 userEntity,
                 appRuleByIdMap[ruleId],
+                logger,
               );
               if (awsArns) {
-                numberOfArns = numberOfArns + awsArns.length;
                 const awsRelationships = convertAWSRolesToRelationships(
                   userEntity,
                   awsArns,
@@ -98,8 +98,7 @@ export async function fetchUserApps({
                 );
                 for (const rel of awsRelationships) {
                   if (!jobState.hasKey(rel._key)) {
-                    //TODO: for now, don't actually add the rel until we've refined rule condition parsing
-                    //await jobState.addRelationship(rel);
+                    await jobState.addRelationship(rel);
                     numberOfAwsIamRels = numberOfAwsIamRels + 1;
                   }
                 }
@@ -107,7 +106,7 @@ export async function fetchUserApps({
             } catch (err) {
               logger.info(
                 { err, userId: userEntity.id },
-                'Unable to build relationships between OneLogin user and AWS Roles',
+                'Error while building relationships between OneLogin user and AWS Roles',
               );
             }
           }
@@ -133,7 +132,6 @@ export async function fetchUserApps({
   logger.info(
     {
       userCount: userEntities.length,
-      arnCount: numberOfArns,
       iamRoleRelationshipCount: numberOfAwsIamRels,
     },
     'Completed OneLogin user to AWS Role processing',

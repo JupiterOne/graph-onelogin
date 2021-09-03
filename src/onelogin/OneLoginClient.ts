@@ -42,7 +42,7 @@ export interface User {
   email: string;
   username: string | null;
   firstname: string;
-  group_id: number;
+  group_id: number; //users can only be in one OneLogin group
   id: number;
   invalid_login_attempts: number | null;
   invitation_sent_at: string | null;
@@ -60,12 +60,12 @@ export interface User {
   distinguished_name: string | null;
   external_id: number | null;
   directory_id: number | null;
-  member_of: string | null;
+  member_of: string | null; //refers to membership in an Active Directory security group
   samaccountname: string | null;
   userprincipalname: string | null;
   manager_ad_id: number | null;
   manager_user_id: number | null;
-  role_id: number[];
+  role_id: string[]; //users can have multiple OneLogin roles
   company: string | null;
   department: string | null;
   title: string | null;

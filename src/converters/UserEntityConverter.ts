@@ -21,9 +21,9 @@ export function createUserEntity(
   let roles = '';
   if (user.role_id) {
     for (const roleId of user.role_id) {
-      const role = roleByIdMap[String(roleId)];
+      const role = roleByIdMap[roleId];
       if (role) {
-        roles = roles + role.name + ';';
+        roles = roles + role.name + ',';
       }
     }
   }
@@ -39,7 +39,7 @@ export function createUserEntity(
     email: user.email,
     username: user.username || '',
     firstname: user.firstname,
-    groupId: user.group_id || 0,
+    groupId: String(user.group_id || ''), //group_id is null for users assigned to group "None"
     invalidLoginAttempts: user.invalid_login_attempts,
     invitationSentAt: parseTimePropertyValue(user.invitation_sent_at),
     lastLogin: parseTimePropertyValue(user.last_login),
@@ -56,7 +56,7 @@ export function createUserEntity(
     distinguishedName: user.distinguished_name,
     externalId: user.external_id,
     directoryId: user.directory_id,
-    memberOf: user.member_of,
+    memberOf: user.member_of || '', //member_of is null for users with no entry
     samaccountname: user.samaccountname,
     userprincipalname: user.userprincipalname,
     managerAdId: user.manager_ad_id,
@@ -67,6 +67,7 @@ export function createUserEntity(
     state: user.state,
     trustedIdpId: user.trusted_idp_id,
     roles: roles,
+    roleIds: user.role_id?.join(',') || '', //used later for checking rule conditions
     ...convertProperties(user.custom_attributes, {
       prefix: 'customAttributes', //used to be custom_attributes
     }),

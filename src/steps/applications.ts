@@ -58,11 +58,6 @@ export async function fetchApplications({
     if (app.rules) {
       for (const rule of app.rules) {
         ruleApiResponseByIdMap[rule.id] = rule; //storing the raw API response to preserve nested rule conditions and actions objects
-        //TODO: remove temporary logging after learning the rules in use
-        logger.info(
-          { rule: rule, conditions: rule.conditions, actions: rule.actions },
-          'Found OneLogin application rule',
-        );
         const ruleEntity = (await jobState.addEntity(
           createAppRuleEntity(rule),
         )) as AppRuleEntity;
