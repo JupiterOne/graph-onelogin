@@ -95,6 +95,7 @@ export async function fetchUserApps({
                   userEntity,
                   awsArns,
                   USER_AWS_IAM_ROLE_RELATIONSHIP_TYPE,
+                  logger,
                 );
                 for (const rel of awsRelationships) {
                   if (!jobState.hasKey(rel._key)) {
