@@ -103,7 +103,7 @@ function checkConditionForUser(
       case 'ew': // "ends with"
         return memberOf.endsWith(condValue);
       default:
-        logger.warn(
+        logger.info(
           { cond },
           `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
         );
@@ -123,7 +123,7 @@ function checkConditionForUser(
       case 'rin': // "roles include NOT"
         return !roleIds.includes(condValue);
       default:
-        logger.warn(
+        logger.info(
           { cond },
           `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
         );
@@ -141,14 +141,14 @@ function checkConditionForUser(
       case '!=':
         return user.groupId !== condValue;
       default:
-        logger.warn(
+        logger.info(
           { cond },
           `findArns.ts did not recognize operator "${cond.operator}" in application rule condition source "${cond.source}"`,
         );
         return false;
     }
   }
-  logger.warn(
+  logger.info(
     { cond },
     `findArns.ts failed did not recognize application rule condition source "${cond.source}"`,
   );
