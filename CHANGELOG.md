@@ -8,7 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Added logs for mapped relationships that are being created to AWS roles.
+
 ## [2.2.8] 2021-09-03
+
+### Added
 
 - Application Rules now respect conditions based on OneLogin Role, Group, or
   MemberOf (Active Directory security group) properties

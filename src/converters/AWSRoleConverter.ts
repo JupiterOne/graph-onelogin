@@ -1,4 +1,5 @@
 import {
+  IntegrationLogger,
   MappedRelationship,
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
@@ -11,6 +12,7 @@ export function convertAWSRolesToRelationships(
   oneLoginPrincipal: UserEntity | GroupEntity,
   roles: string[],
   relationshipType: string,
+  logger: IntegrationLogger,
 ): MappedRelationship[] {
   const relationships: MappedRelationship[] = [];
   for (const role of roles) {
@@ -24,6 +26,14 @@ export function convertAWSRolesToRelationships(
       if (relationship) {
         relationships.push(relationship);
       }
+      logger.info(
+        {
+          sourceKey: oneLoginPrincipal.id,
+          targetKey: cleanRole,
+          relationshipKey: relationship?._key,
+        },
+        'Creating Mapped Relationship to Role',
+      );
     }
   }
   return relationships;
