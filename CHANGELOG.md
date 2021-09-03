@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.9] 2021-09-03
+
 ### Added
 
 - Added logs for mapped relationships that are being created to AWS roles.
