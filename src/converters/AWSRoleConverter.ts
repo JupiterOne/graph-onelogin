@@ -3,7 +3,9 @@ import {
   MappedRelationship,
   RelationshipDirection,
 } from '@jupiterone/integration-sdk-core';
-import { UserEntity, GroupEntity } from '../jupiterone';
+import { UserEntity, USER_ENTITY_TYPE, GroupEntity } from '../jupiterone';
+
+import generateKey from '../utils/generateKey';
 
 //example that matches: 'arn:aws:iam::123456789987:role/Great_Job123_For_Some-body'
 const ARN_REGEX = /^arn:aws:iam::[0-9]+:role\/([a-zA-Z0-9-_]+)/i;
@@ -15,11 +17,12 @@ export function convertAWSRolesToRelationships(
   logger: IntegrationLogger,
 ): MappedRelationship[] {
   const relationships: MappedRelationship[] = [];
+  const sourceUserKey = generateKey(USER_ENTITY_TYPE, oneLoginPrincipal.id);
   for (const role of roles) {
     const cleanRole = role.trim();
     if (ARN_REGEX.test(cleanRole)) {
       const relationship = mapAWSRoleAssignment({
-        sourceKey: oneLoginPrincipal.id,
+        sourceKey: sourceUserKey,
         roleArn: cleanRole,
         relationshipType,
       });
@@ -28,7 +31,7 @@ export function convertAWSRolesToRelationships(
       }
       logger.info(
         {
-          sourceKey: oneLoginPrincipal.id,
+          sourceKey: sourceUserKey,
           targetKey: cleanRole,
           relationshipKey: relationship?._key,
         },
