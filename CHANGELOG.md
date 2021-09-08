@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [2.2.10] 2021-09-08
+
+### Fixed
+
+- Changed source entity key for `onelogin_user` to `aws_iam_role` mapped
+  relationship to use generate key function. This was causing mapped
+  relationship creation to fail.
+
 ## [2.2.9] 2021-09-03
 
 ### Added
