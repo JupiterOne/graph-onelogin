@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.2.11 - 2021-09-13
+
 ### Fixed
 
 - Prevent duplicate `mfa_device` entity `_key`
