@@ -26,14 +26,16 @@
     "prepush": "yarn lint && yarn type-check && jest --changedSince main",
     "prepack": "yarn build"
   },
+  "peerDependencies": {
+    "@jupiterone/integration-sdk-core": "^6.19.0"
+  },
   "dependencies": {
-    "@jupiterone/integration-sdk-core": "^6.18.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^6.18.0",
-    "@jupiterone/integration-sdk-dev-tools": "^6.18.0",
-    "@jupiterone/integration-sdk-testing": "^6.18.0",
+    "@jupiterone/integration-sdk-core": "^6.19.0",
+    "@jupiterone/integration-sdk-dev-tools": "^6.19.0",
+    "@jupiterone/integration-sdk-testing": "^6.19.0",
     "@types/fs-extra": "^5.0.5",
     "@types/node-fetch": "^2.5.12",
     "dotenv": "^10.0.0",
