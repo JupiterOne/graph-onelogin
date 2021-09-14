@@ -46,11 +46,11 @@ export async function fetchUserDevices({
           },
           'Duplicate device found. Skipping.',
         );
-        return;
+      } else {
+        await jobState.addEntity(rawDeviceEntity);
       }
 
-      const deviceEntity = await jobState.addEntity(rawDeviceEntity);
-      mfaDeviceKeySet.add(deviceEntity._key);
+      mfaDeviceKeySet.add(rawDeviceEntity._key);
 
       await jobState.addRelationship(
         createDirectRelationship({
@@ -58,7 +58,7 @@ export async function fetchUserDevices({
           fromType: USER_ENTITY_TYPE,
           toType: PERSONAL_DEVICE_ENTITY_TYPE,
           fromKey: userEntity._key,
-          toKey: deviceEntity._key,
+          toKey: rawDeviceEntity._key,
         }),
       );
     });
