@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Always create `onelogin_user` **ASSIGNED** `mfa_device` relationship even if
+  we've already seen the same `mfa_device`
+
 ## 2.2.11 - 2021-09-13
 
 ### Fixed
