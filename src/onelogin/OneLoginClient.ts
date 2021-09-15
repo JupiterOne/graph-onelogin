@@ -348,15 +348,17 @@ export default class OneLoginClient {
       { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalAppResponse;
 
-    const apps: PersonalApp[] = result.data;
-
-    this.logger.info(
-      {
-        size: result.data.length,
-        userId,
-      },
-      'Fetched OneLogin apps for user',
-    );
+    let apps: PersonalApp[] = [];
+    if (result.data) {
+      apps = result.data;
+      this.logger.info(
+        {
+          size: result.data.length,
+          userId,
+        },
+        'Fetched OneLogin apps for user',
+      );
+    }
 
     return apps;
   }

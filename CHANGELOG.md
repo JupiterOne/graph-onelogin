@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Do not fail UserApps step when user has no apps assigned
+
 ## 2.2.12 - 2021-09-14
 
 ### Fixed
