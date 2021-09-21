@@ -33,6 +33,7 @@ export async function fetchUserDevices({
   }
 
   const mfaDeviceKeySet = new Set<string>();
+  const mfaDeviceRelationshipKeySet = new Set<string>();
 
   for (const userEntity of userEntities) {
     await apiClient.iterateUserDevices(userEntity.id, async (device) => {
@@ -52,15 +53,18 @@ export async function fetchUserDevices({
 
       mfaDeviceKeySet.add(rawDeviceEntity._key);
 
-      await jobState.addRelationship(
-        createDirectRelationship({
-          _class: RelationshipClass.ASSIGNED,
-          fromType: USER_ENTITY_TYPE,
-          toType: PERSONAL_DEVICE_ENTITY_TYPE,
-          fromKey: userEntity._key,
-          toKey: rawDeviceEntity._key,
-        }),
-      );
+      const userDeviceRelationship = createDirectRelationship({
+        _class: RelationshipClass.ASSIGNED,
+        fromType: USER_ENTITY_TYPE,
+        toType: PERSONAL_DEVICE_ENTITY_TYPE,
+        fromKey: userEntity._key,
+        toKey: rawDeviceEntity._key,
+      });
+
+      if (!mfaDeviceRelationshipKeySet.has(userDeviceRelationship._key)) {
+        await jobState.addRelationship(userDeviceRelationship);
+        mfaDeviceRelationshipKeySet.add(userDeviceRelationship._key);
+      }
     });
   }
 }

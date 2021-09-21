@@ -11,6 +11,7 @@ and this project adheres to
 ### Fixed
 
 - Do not fail UserApps step when user has no apps assigned
+- Prevent duplicate `onelogin_user` **ASSIGNED** `mfa_device` relationships
 
 ## 2.2.12 - 2021-09-14
 
