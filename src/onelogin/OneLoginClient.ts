@@ -4,6 +4,7 @@ import {
   IntegrationProviderAuthenticationError,
 } from '@jupiterone/integration-sdk-core';
 import fetch, { RequestInit } from 'node-fetch';
+import { retry, AttemptContext } from '@lifeomic/attempt';
 
 interface OneloginV1Response {
   status: {
@@ -410,17 +411,79 @@ export default class OneLoginClient {
       options = { ...options, body: JSON.stringify(params) };
     }
 
-    const response = await fetch(this.host + url, options);
-    const result = await response.json();
-    //if a bad call is made, an object is returned with a statusCode field set to a non-200 value
-    if (result.statusCode && !(result.statusCode === 200)) {
-      throw new IntegrationProviderAPIError({
-        cause: result,
-        endpoint: this.host + url,
-        status: result.statusCode,
-        statusText: result.message,
-      });
-    }
-    return result;
+    const logger = this.logger;
+    const fullUrl = this.host + url;
+
+    //everything in fetchWithErrorAwareness is going into the retry function below
+    const fetchWithErrorAwareness = async () => {
+      let response;
+      //check for fundamental errors (network not available, DNS fail, etc)
+      try {
+        response = await fetch(fullUrl, options);
+      } catch (err) {
+        throw new IntegrationProviderAPIError({
+          message: `Error during fetch from ${fullUrl}`,
+          status: err.status,
+          statusText: `Error msg: ${err.statusText}, url: ${fullUrl}`,
+          cause: err,
+          endpoint: fullUrl,
+        });
+      }
+
+      // fetch doesn't error on 4xx/5xx HTTP codes, so you have to do that yourself
+      const result = await response.json();
+      if (result.statusCode && !(result.statusCode === 200)) {
+        throw new IntegrationProviderAPIError({
+          cause: result,
+          endpoint: this.host + url,
+          status: result.statusCode,
+          statusText: result.message,
+        });
+      }
+      return result;
+    };
+
+    const retryOptions = {
+      delay: 1000,
+      maxAttempts: 10,
+      initialDelay: 0,
+      minDelay: 0,
+      maxDelay: 0,
+      factor: 2,
+      timeout: 0,
+      jitter: false,
+      handleError: null,
+      handleTimeout: null,
+      beforeAttempt: null,
+      calculateDelay: null,
+    }; // 10 attempts with 1000 ms start and factor 2 means longest wait is 20 minutes
+
+    return await retry(fetchWithErrorAwareness, {
+      ...retryOptions,
+      handleError(error: any, attemptContext: AttemptContext) {
+        //retry will keep trying to the limits of retryOptions
+        //but it lets you intervene in this function - if you throw an error from in here,
+        //it stops retrying. Otherwise you can just log the attempts.
+        if (error.retryable === false || error.status === 401) {
+          attemptContext.abort();
+          throw error;
+        }
+
+        //unknown whether OneLogin uses this code, but just in case
+        if (error.status === 429) {
+          logger.warn(
+            `Status 429 (rate limiting) encountered. Engaging backoff function.`,
+          );
+        }
+
+        //test for 5xx HTTP codes
+        if (Math.floor(error.status / 100) === 5) {
+          logger.warn(
+            `Status 5xx (server errors) encountered. Engaging backoff function.`,
+          );
+        }
+        logger.info(`Retrying on ${error.endpoint}`);
+      },
+    });
   }
 }
