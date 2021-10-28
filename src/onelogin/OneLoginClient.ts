@@ -437,7 +437,7 @@ export default class OneLoginClient {
           cause: result,
           endpoint: this.host + url,
           status: result.statusCode,
-          statusText: result.message,
+          statusText: result.status.message,
         });
       }
       return result;
