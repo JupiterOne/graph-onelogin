@@ -38,3 +38,27 @@ describe('fetchUsers', () => {
     expect(users.length).toBeGreaterThan(0);
   });
 });
+
+describe('try to authen with bad credens', () => {
+  test('success', async () => {
+    recording = setupOneloginRecording({
+      directory: __dirname,
+      name: 'badCredens',
+      options: {
+        recordFailedRequests: true,
+        matchRequestsBy: {
+          body: false,
+        },
+      },
+    });
+
+    const client = new OneLoginClient(
+      integrationConfig.clientId,
+      integrationConfig.clientSecret,
+      createMockIntegrationLogger(),
+    );
+    //await client.authenticate();
+    //since we skipped the authen, we should have no token and throw a 401
+    await expect(client.fetchUsers()).rejects.toThrow();
+  });
+});

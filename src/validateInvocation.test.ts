@@ -71,7 +71,7 @@ test('should fail if Client ID is invalid', async () => {
   });
 
   await expect(validateInvocation(executionContext)).rejects.toThrow(
-    `Provider authentication failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Authentication Failure`,
+    `Provider API failed at https://api.us.onelogin.com/auth/oauth2/v2/token: 401 Authentication Failure`,
   );
 });
 
@@ -92,6 +92,6 @@ test('should fail if Client secret is invalid', async () => {
   });
 
   await expect(validateInvocation(executionContext)).rejects.toThrow(
-    `Provider authentication failed at https://api.us.onelogin.com/auth/oauth2/token: 401 Authentication Failure`,
+    `Provider API failed at https://api.us.onelogin.com/auth/oauth2/v2/token: 401 Authentication Failure`,
   );
 });

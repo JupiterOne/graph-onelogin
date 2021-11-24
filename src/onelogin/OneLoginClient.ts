@@ -421,10 +421,12 @@ export default class OneLoginClient {
       try {
         response = await fetch(fullUrl, options);
       } catch (err) {
+        const status = err.status.code || 'unknown';
+        const statusText = err.statusText || 'No status text received';
         throw new IntegrationProviderAPIError({
           message: `Error during fetch from ${fullUrl}`,
-          status: err.status,
-          statusText: `Error msg: ${err.statusText}, url: ${fullUrl}`,
+          status: status,
+          statusText: statusText,
           cause: err,
           endpoint: fullUrl,
         });
@@ -432,11 +434,11 @@ export default class OneLoginClient {
 
       // fetch doesn't error on 4xx/5xx HTTP codes, so you have to do that yourself
       const result = await response.json();
-      if (result.statusCode && !(result.statusCode === 200)) {
+      if (result.status?.code && !(result.status.code === 200)) {
         throw new IntegrationProviderAPIError({
           cause: result,
           endpoint: this.host + url,
-          status: result.statusCode,
+          status: result.status.code,
           statusText: result.status.message,
         });
       }
@@ -464,9 +466,12 @@ export default class OneLoginClient {
         //retry will keep trying to the limits of retryOptions
         //but it lets you intervene in this function - if you throw an error from in here,
         //it stops retrying. Otherwise you can just log the attempts.
-        if (error.retryable === false || error.status === 401) {
+        if (
+          error.retryable === false ||
+          error.status === 401 ||
+          error.status === 404
+        ) {
           attemptContext.abort();
-          throw error;
         }
 
         //unknown whether OneLogin uses this code, but just in case
