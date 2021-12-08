@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Retry with exponential backoff function to error handling
+- `mfaEnabled` property added to `onelogin_user`, with `undefined` value, for
+  future development
+
 ## 2.2.13 - 2021-09-21
 
 ### Fixed

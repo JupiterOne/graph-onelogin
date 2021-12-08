@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
         os: [ubuntu-latest]
 
     steps:
@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      - name: Run tests
+        run: yarn test:ci
+
       - name: Run build
         run: yarn build
 
@@ -35,13 +38,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [12]
+        node: [14]
 
     steps:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
 
       - name: Check out repo
         uses: actions/checkout@v2
@@ -60,6 +63,7 @@ jobs:
           else
             echo "Version commit tag not found. Not publishing."
           fi
+
       - name: Publish
         if: env.publish == 'true'
         env:

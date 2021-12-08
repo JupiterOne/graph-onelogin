@@ -45,6 +45,7 @@ export function createUserEntity(
     lastLogin: parseTimePropertyValue(user.last_login),
     lastname: user.lastname,
     lockedUntil: user.locked_until,
+    mfaEnabled: undefined, //property not currently supported by OneLogin, for future dev
     comment: user.comment || '',
     openidName: user.openid_name || '',
     localeCode: user.locale_code,
