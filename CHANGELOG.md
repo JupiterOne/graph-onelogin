@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.2.14 - 2021-12-08
+
 ### Added
 
 - Retry with exponential backoff function to error handling
