@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.2.15 - 2021-12-10
+
+### Added
+
+- Fix potential error when ingesting app entities
+
 ## 2.2.14 - 2021-12-08
 
 ### Added
