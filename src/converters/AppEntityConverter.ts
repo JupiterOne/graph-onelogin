@@ -13,7 +13,7 @@ import generateKey from '../utils/generateKey';
 import { setRawData } from '@jupiterone/integration-sdk-core';
 
 export function createAppEntity(app: App): AppEntity {
-  const ruleIds = app.rules?.map((r) => r.id).join();
+  const ruleIds = (app.rules || []).map((r) => r.id).join();
   const appEntity: AppEntity = {
     _class: APP_ENTITY_CLASS,
     _key: generateKey(APP_ENTITY_TYPE, app.id),
