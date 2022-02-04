@@ -73,6 +73,8 @@ export function createUserEntity(
       prefix: 'customAttributes', //used to be custom_attributes
     }),
   };
-  setRawData(userEntity, { name: 'default', rawData: user });
+
+  // Raw data disabled due to very large size.
+  setRawData(userEntity, { name: 'default', rawData: {} });
   return userEntity;
 }
