@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.2.16 - 2022-02-04
+
+### Fixed
+
+- Removed raw data from `onelogin_user` entity due to very large size
+
 ## 2.2.15 - 2021-12-10
 
 ### Added
