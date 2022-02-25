@@ -524,8 +524,4 @@ export default class OneLoginClient {
       },
     });
   }
-
-  public manuallyConfigureExpiration(expirationDate: Date) {
-    this.accessExpiring = expirationDate;
-  }
 }
