@@ -28,6 +28,14 @@ test('should collect data', async () => {
     directory: __dirname,
     name: 'steps',
   });
+  JSON.stringify();
+  // We need to short circuit Date.now() to a time prior to
+  // the expiration of any recorded token responses, otherwise
+  // we'll constantly have to re-record to get our tests to
+  // pass
+  jest
+    .spyOn(global.Date, 'now')
+    .mockImplementation(() => new Date('2018-01-01T11:00:00.000Z').valueOf());
 
   const context = createMockStepExecutionContext<IntegrationConfig>({
     instanceConfig: integrationConfig,

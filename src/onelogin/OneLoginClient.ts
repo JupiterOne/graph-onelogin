@@ -187,6 +187,8 @@ enum Method {
 export default class OneLoginClient {
   readonly host: string;
   private accessToken: string;
+  private accessCreated: Date;
+  private accessExpiring: Date;
 
   constructor(
     private clientId: string,
@@ -209,6 +211,11 @@ export default class OneLoginClient {
 
     if (result.access_token) {
       this.accessToken = result.access_token;
+      this.accessCreated = new Date(result.created_at);
+      // Pad by several seconds so we don't wait too long to get a new access token
+      this.accessExpiring = new Date(
+        this.accessCreated.getTime() + (result.expires_in - 2) * 1000,
+      );
       return;
     }
 
@@ -414,6 +421,32 @@ export default class OneLoginClient {
     const logger = this.logger;
     const fullUrl = this.host + url;
 
+    // If we have an accessToken, check that it's not about to expire
+    if (this.accessToken && this.accessExpiring) {
+      const currentDate = new Date(Date.now());
+      if (currentDate > this.accessExpiring) {
+        // Attempt to get a new token.  The API authenticate call currently
+        // will only return the current token if it's unexpired, so we need
+        // to try until we see the token value change.  Including a counter
+        // and a maximum number of attempts to prevent an endless loop.
+        logger.info(
+          `Requesting new token to replace token created at ${this.accessCreated}`,
+        );
+        let attemptCount = 0;
+        const MAX_ATTEMPTS = 5;
+        const millisecondsToSleep = 2000;
+        const oldToken = this.accessToken;
+        while (oldToken === this.accessToken && attemptCount < MAX_ATTEMPTS) {
+          // Sleep before (re)trying
+          await new Promise((resolve) =>
+            setTimeout(resolve, millisecondsToSleep),
+          );
+          await this.authenticate();
+          attemptCount += 1;
+        }
+      }
+    }
+
     //everything in fetchWithErrorAwareness is going into the retry function below
     const fetchWithErrorAwareness = async () => {
       let response;
@@ -490,5 +523,9 @@ export default class OneLoginClient {
         logger.info(`Retrying on ${error.endpoint}`);
       },
     });
+  }
+
+  public manuallyConfigureExpiration(expirationDate: Date) {
+    this.accessExpiring = expirationDate;
   }
 }
