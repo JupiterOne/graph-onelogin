@@ -224,13 +224,14 @@ export default class OneLoginClient {
     let afterCursor: string | null = '';
 
     do {
+      console.log(`APAPAP fetchUsers`);
       const result = (await this.makeRequest(
         `/api/1/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
         { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
-
+      console.log(`APAPAP fetchUsers`, result);
       if (result.data) {
         users = [...users, ...result.data];
         afterCursor = result.pagination.after_cursor;
@@ -419,6 +420,16 @@ export default class OneLoginClient {
       let response;
       //check for fundamental errors (network not available, DNS fail, etc)
       try {
+        console.log(`APAPAPAP trying with `, this.accessToken);
+        //deconstruct and update options
+        if (
+          options.headers &&
+          options.headers[`Authorization`] &&
+          method != Method.POST
+        ) {
+          // for our non-auth calls (aka non-POST calls), we need to update the header info first
+          options.headers[`Authorization`] = `bearer ${this.accessToken}`;
+        }
         response = await fetch(fullUrl, options);
       } catch (err) {
         const status = err.status.code || 'unknown';
