@@ -230,7 +230,6 @@ export default class OneLoginClient {
         {},
         { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
-
       if (result.data) {
         users = [...users, ...result.data];
         afterCursor = result.pagination.after_cursor;
@@ -419,6 +418,16 @@ export default class OneLoginClient {
       let response;
       //check for fundamental errors (network not available, DNS fail, etc)
       try {
+        //deconstruct and update options
+        if (
+          options.headers &&
+          options.headers[`Authorization`] &&
+          method != Method.POST &&
+          this.accessToken
+        ) {
+          // for our non-auth calls (aka non-POST calls), we need to update the header info first
+          options.headers[`Authorization`] = `bearer ${this.accessToken}`;
+        }
         response = await fetch(fullUrl, options);
       } catch (err) {
         const status = err.status.code || 'unknown';
@@ -458,19 +467,16 @@ export default class OneLoginClient {
       handleTimeout: null,
       beforeAttempt: null,
       calculateDelay: null,
+      clientInstance: this,
     }; // 10 attempts with 1000 ms start and factor 2 means longest wait is 20 minutes
 
     return await retry(fetchWithErrorAwareness, {
       ...retryOptions,
-      handleError(error: any, attemptContext: AttemptContext) {
+      async handleError(error: any, attemptContext: AttemptContext) {
         //retry will keep trying to the limits of retryOptions
         //but it lets you intervene in this function - if you throw an error from in here,
         //it stops retrying. Otherwise you can just log the attempts.
-        if (
-          error.retryable === false ||
-          error.status === 401 ||
-          error.status === 404
-        ) {
+        if (error.retryable === false || error.status === 404) {
           attemptContext.abort();
         }
 
@@ -479,6 +485,16 @@ export default class OneLoginClient {
           logger.warn(
             `Status 429 (rate limiting) encountered. Engaging backoff function.`,
           );
+        }
+
+        if (error.status === 401) {
+          logger.info(
+            `Attempting to reauthenticate after 401 error possibly due to expired token.`,
+          );
+          if (attemptContext.attemptNum > 2) {
+            attemptContext.abort();
+          }
+          await retryOptions.clientInstance.authenticate();
         }
 
         //test for 5xx HTTP codes
