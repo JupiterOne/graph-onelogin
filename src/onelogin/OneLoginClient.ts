@@ -482,6 +482,9 @@ export default class OneLoginClient {
           logger.info(
             `Attempting to reauthenticate after 401 error possibly due to expired token.`,
           );
+          if (attemptContext.attemptNum > 2) {
+            attemptContext.abort();
+          }
           await retryOptions.clientInstance.authenticate();
         }
 
