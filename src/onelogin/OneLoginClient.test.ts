@@ -47,7 +47,7 @@ describe('fetchUsers', () => {
   });
 });
 
-describe('try to authen with bad credens', () => {
+describe('try to authenticate on a 401 error', () => {
   test('success', async () => {
     recording = setupOneloginRecording({
       directory: __dirname,
@@ -65,8 +65,8 @@ describe('try to authen with bad credens', () => {
       integrationConfig.clientSecret,
       createMockIntegrationLogger(),
     );
-    //await client.authenticate();
-    //since we skipped the authen, we should have no token and throw a 401
-    await expect(client.fetchUsers()).rejects.toThrow();
+    //since we skipped the authen, we should throw a 401 and get a token on the retry
+    const users = await client.fetchUsers();
+    expect(users.length).toBeGreaterThan(0);
   });
 });
