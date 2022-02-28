@@ -47,28 +47,29 @@ describe('fetchUsers', () => {
   });
 });
 
-// describe('try to authenticate on a 401 error', () => {
-//   test('success', async () => {
-//     jest.setTimeout(30000);
+describe('try to authenticate on a 401 error', () => {
+  test('success', async () => {
+    jest.setTimeout(30000);
 
-//     recording = setupOneloginRecording({
-//       directory: __dirname,
-//       name: 'badCredens',
-//       options: {
-//         recordFailedRequests: true,
-//         matchRequestsBy: {
-//           body: false,
-//         },
-//       },
-//     });
+    recording = setupOneloginRecording({
+      directory: __dirname,
+      name: 'badCredens',
+      options: {
+        recordFailedRequests: true,
+        matchRequestsBy: {
+          body: false,
+        },
+      },
+    });
 
-//     const client = new OneLoginClient(
-//       integrationConfig.clientId,
-//       integrationConfig.clientSecret,
-//       createMockIntegrationLogger(),
-//     );
-//     //since we skipped the authen, we should throw a 401 and get a token on the retry
-//     const users = await client.fetchUsers();
-//     expect(users.length).toBeGreaterThan(0);
-//   });
-// });
+    const client = new OneLoginClient(
+      integrationConfig.clientId,
+      integrationConfig.clientSecret,
+      createMockIntegrationLogger(),
+    );
+
+    //since we skipped the authen, we should throw a 401 and get a token on the retry
+    const users = await client.fetchUsers();
+    expect(users.length).toBeGreaterThan(0);
+  });
+});
