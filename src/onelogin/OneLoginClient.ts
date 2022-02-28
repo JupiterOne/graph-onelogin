@@ -228,7 +228,6 @@ export default class OneLoginClient {
         `/api/1/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
       if (result.data) {
         users = [...users, ...result.data];
@@ -255,7 +254,6 @@ export default class OneLoginClient {
         `/api/1/groups?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as GroupResponse;
 
       if (result.data) {
@@ -283,7 +281,6 @@ export default class OneLoginClient {
         `/api/1/roles?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as RoleResponse;
 
       if (result.data) {
@@ -311,7 +308,6 @@ export default class OneLoginClient {
         `/api/1/apps?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as AppResponse;
 
       if (result.data) {
@@ -335,7 +331,6 @@ export default class OneLoginClient {
       `/api/2/apps/${appId}/rules`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as AppRule[];
     return rules;
   }
@@ -345,7 +340,6 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/apps`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalAppResponse;
 
     let apps: PersonalApp[] = [];
@@ -368,7 +362,6 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/otp_devices`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalDeviceResponse;
 
     const devices: PersonalDevice[] = result.data.otp_devices;
@@ -388,7 +381,7 @@ export default class OneLoginClient {
     url: string,
     method: Method,
     params: {},
-    headers: {},
+    headers?: {},
   ): Promise<
     | AccessTokenResponse
     | AccessTokenResponseV2
@@ -415,19 +408,14 @@ export default class OneLoginClient {
 
     //everything in fetchWithErrorAwareness is going into the retry function below
     const fetchWithErrorAwareness = async () => {
+      if (options.headers && !options.headers[`Authorization`]) {
+        // If no Auth header is present, set the current accessToken
+        options.headers[`Authorization`] = `bearer ${this.accessToken}`;
+      }
+
       let response;
       //check for fundamental errors (network not available, DNS fail, etc)
       try {
-        //deconstruct and update options
-        if (
-          options.headers &&
-          options.headers[`Authorization`] &&
-          method != Method.POST &&
-          this.accessToken
-        ) {
-          // for our non-auth calls (aka non-POST calls), we need to update the header info first
-          options.headers[`Authorization`] = `bearer ${this.accessToken}`;
-        }
         response = await fetch(fullUrl, options);
       } catch (err) {
         const status = err.status.code || 'unknown';
