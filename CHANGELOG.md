@@ -8,6 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.3.0 - 2022-02-04
+
+- Integration now catches first instance of a thrown 401 error and attempts to
+  refresh the access token. We cannot proactively refresh the access token due
+  to how authorization requests are handled by the API (the current access token
+  is returned in subsequent API calls until it expires).
+
 ## 2.2.16 - 2022-02-04
 
 ### Fixed
