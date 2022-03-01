@@ -228,9 +228,7 @@ export default class OneLoginClient {
         `/api/1/users?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as UserResponse;
-
       if (result.data) {
         users = [...users, ...result.data];
         afterCursor = result.pagination.after_cursor;
@@ -256,7 +254,6 @@ export default class OneLoginClient {
         `/api/1/groups?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as GroupResponse;
 
       if (result.data) {
@@ -284,7 +281,6 @@ export default class OneLoginClient {
         `/api/1/roles?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as RoleResponse;
 
       if (result.data) {
@@ -312,7 +308,6 @@ export default class OneLoginClient {
         `/api/1/apps?after_cursor=${afterCursor}`,
         Method.GET,
         {},
-        { Authorization: `bearer ${this.accessToken}` },
       )) as AppResponse;
 
       if (result.data) {
@@ -336,7 +331,6 @@ export default class OneLoginClient {
       `/api/2/apps/${appId}/rules`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as AppRule[];
     return rules;
   }
@@ -346,7 +340,6 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/apps`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalAppResponse;
 
     let apps: PersonalApp[] = [];
@@ -369,7 +362,6 @@ export default class OneLoginClient {
       `/api/1/users/${userId}/otp_devices`,
       Method.GET,
       {},
-      { Authorization: `bearer ${this.accessToken}` },
     )) as PersonalDeviceResponse;
 
     const devices: PersonalDevice[] = result.data.otp_devices;
@@ -389,7 +381,7 @@ export default class OneLoginClient {
     url: string,
     method: Method,
     params: {},
-    headers: {},
+    headers?: {},
   ): Promise<
     | AccessTokenResponse
     | AccessTokenResponseV2
@@ -416,6 +408,11 @@ export default class OneLoginClient {
 
     //everything in fetchWithErrorAwareness is going into the retry function below
     const fetchWithErrorAwareness = async () => {
+      if (options.headers && !options.headers[`Authorization`]) {
+        // If no Auth header is present, set the current accessToken
+        options.headers[`Authorization`] = `bearer ${this.accessToken}`;
+      }
+
       let response;
       //check for fundamental errors (network not available, DNS fail, etc)
       try {
@@ -458,19 +455,16 @@ export default class OneLoginClient {
       handleTimeout: null,
       beforeAttempt: null,
       calculateDelay: null,
+      clientInstance: this,
     }; // 10 attempts with 1000 ms start and factor 2 means longest wait is 20 minutes
 
     return await retry(fetchWithErrorAwareness, {
       ...retryOptions,
-      handleError(error: any, attemptContext: AttemptContext) {
+      async handleError(error: any, attemptContext: AttemptContext) {
         //retry will keep trying to the limits of retryOptions
         //but it lets you intervene in this function - if you throw an error from in here,
         //it stops retrying. Otherwise you can just log the attempts.
-        if (
-          error.retryable === false ||
-          error.status === 401 ||
-          error.status === 404
-        ) {
+        if (error.retryable === false || error.status === 404) {
           attemptContext.abort();
         }
 
@@ -479,6 +473,16 @@ export default class OneLoginClient {
           logger.warn(
             `Status 429 (rate limiting) encountered. Engaging backoff function.`,
           );
+        }
+
+        if (error.status === 401) {
+          logger.info(
+            `Attempting to reauthenticate after 401 error possibly due to expired token.`,
+          );
+          if (attemptContext.attemptNum > 2) {
+            attemptContext.abort();
+          }
+          await retryOptions.clientInstance.authenticate();
         }
 
         //test for 5xx HTTP codes
