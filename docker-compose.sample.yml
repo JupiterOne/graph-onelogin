@@ -10,7 +10,7 @@ services:
       - ~/.ssh:/root/.ssh
       - ~/.bash_history:/root/.bash_history
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       NODE_ENV: development
       GRAPH_DB_ENDPOINT: graph
@@ -23,4 +23,4 @@ services:
     image: tinkerpop/gremlin-server:3.3
     restart: unless-stopped
     ports:
-      - "8182:8182"
+      - '8182:8182'
