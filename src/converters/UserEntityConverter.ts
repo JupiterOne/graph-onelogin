@@ -72,6 +72,7 @@ export function createUserEntity(
     ...convertProperties(user.custom_attributes, {
       prefix: 'customAttributes', //used to be custom_attributes
     }),
+    active: user.status === 1,
   };
 
   // Raw data disabled due to very large size.
