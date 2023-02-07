@@ -12,8 +12,8 @@ and this project adheres to
 
 ### Fixed
 
-- Updated package.json to latest sdk, to fix the r shrinkBatchRawData() errors
-  Latest sdk uses an updated J1/schema/User entity so changes were requred in
+- Updated package.json to latest sdk, to fix the shrinkBatchRawData() errors.
+  Latest sdk uses an updated J1/schema/User entity so changes were required in
   the user converter and jest snapshot.
 
 ## 2.3.0 - 2022-02-04
