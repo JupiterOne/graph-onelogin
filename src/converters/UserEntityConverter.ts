@@ -10,7 +10,7 @@ import {
   IdEntityMap,
   RoleEntity,
 } from '../jupiterone';
-import { User } from '../onelogin/OneLoginClient';
+import { OneLoginUserStatus, User } from '../onelogin/OneLoginClient';
 
 import generateKey from '../utils/generateKey';
 
@@ -72,6 +72,7 @@ export function createUserEntity(
     ...convertProperties(user.custom_attributes, {
       prefix: 'customAttributes', //used to be custom_attributes
     }),
+    active: user.status === OneLoginUserStatus.ACTIVE,
   };
 
   // Raw data disabled due to very large size.

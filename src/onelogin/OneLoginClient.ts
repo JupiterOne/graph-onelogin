@@ -37,6 +37,19 @@ export interface Account {
   orgUrl: string | undefined | null;
 }
 
+// the status property on the OneLogin User object is an integer
+// and has the following values:
+export enum OneLoginUserStatus {
+  UNACTIVATED = 0,
+  ACTIVE = 1,
+  SUSPENDED = 2,
+  LOCKED = 3,
+  PASSWORD_EXPIRED = 4,
+  AWAITING_PASSWORD_RESET = 5,
+  PASSWORD_PENDING = 7,
+  SECURITY_QUESTIONS_REQUIRED = 8,
+}
+
 export interface User {
   activated_at: string | null;
   created_at: string;

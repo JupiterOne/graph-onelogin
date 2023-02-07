@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.3.1 - 2023-02-03
+
+### Fixed
+
+- Updated package.json to latest sdk, to fix the shrinkBatchRawData() errors.
+  Latest sdk uses an updated J1/schema/User entity so changes were required in
+  the user converter and jest snapshot.
+
 ## 2.3.0 - 2022-02-04
 
 - Integration now catches first instance of a thrown 401 error and attempts to
